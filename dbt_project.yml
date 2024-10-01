@@ -84,13 +84,13 @@ vars:
   config:
   # The keys correspond to dbt profiles and are case sensitive
     dev:
-      API_INTEGRATION: aws_aleo_api_dev
+      API_INTEGRATION: aws_aleo_api_stg_v2
       EXTERNAL_FUNCTION_URI: gvmfebiq6g.execute-api.us-east-1.amazonaws.com/stg/
       ROLES:
         - AWS_LAMBDA_ALEO_API
         - INTERNAL_DEV
     dev-2xl:
-      API_INTEGRATION: aws_aleo_api_dev
+      API_INTEGRATION: aws_aleo_api_stg_v2
       EXTERNAL_FUNCTION_URI: gvmfebiq6g.execute-api.us-east-1.amazonaws.com/stg/
       ROLES:
         - AWS_LAMBDA_ALEO_API
