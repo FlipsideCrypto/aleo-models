@@ -1,6 +1,3 @@
-
-# Please find and replace all instances of `aleo` with your project name.
-
 ## Profile Set Up
 
 #### Use the following within profiles.yml 
@@ -17,7 +14,7 @@ aleo:
       user: <USERNAME>
       password: <PASSWORD>
       region: <REGION>
-      database: aleo_DEV
+      database: ALEO_DEV
       warehouse: <WAREHOUSE>
       schema: silver
       threads: 4
