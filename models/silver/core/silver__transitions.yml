@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: silver__transitions
+    description: "This model contains detailed information about transitions within transactions on the Aleo blockchain."
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - not_null
+
+      - name: TRANSITION_ID
+        description: "{{ doc('transition_id') }}"
+        tests:
+          - not_null
+          - unique
+
+      - name: PROGRAM_ID
+        description: "{{ doc('program_id') }}"
+        tests:
+          - not_null
+
+      - name: TRANSITION_FUNCTION
+        description: "{{ doc('transition_function') }}"
+        tests:
+          - not_null
+
+      - name: TRANSITION_INPUTS
+        description: "{{ doc('transition_inputs') }}"
+
+      - name: TRANSITION_OUTPUTS
+        description: "{{ doc('transition_outputs') }}"
+
+      - name: COMPLETE_TRANSITION_ID
+        description: "{{ doc('pk') }}"
+        tests:
+          - unique
+          - not_null

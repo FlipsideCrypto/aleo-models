@@ -16,6 +16,7 @@ SELECT
     program_id,
     transition_function,
     transition_inputs,
+    transition_outputs,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id']
     ) }} AS complete_transition_id,

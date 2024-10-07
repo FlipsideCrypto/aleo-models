@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: silver__transactions
+    description: "This model contains detailed information about transactions in the Aleo blockchain."
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - unique
+          - not_null
+
+      - name: TX_TYPE
+        description: "{{ doc('tx_type') }}"
+        tests:
+          - not_null
+
+      - name: TX_DATA
+        description: "{{ doc('tx_data') }}"
+
+      - name: FEE_MSG
+        description: "{{ doc('fee_msg') }}"
+
+      - name: TX_TRANSITION_COUNT
+        description: "{{ doc('tx_transition_count') }}"
+        tests:
+          - not_null
+
+      - name: TX_TRANSITIONS
+        description: "{{ doc('tx_transitions') }}"
+
+      - name: FEE_PROOF
+        description: "{{ doc('fee_proof') }}"
+
+      - name: FEE_GLOBAL_STATE_ROOT
+        description: "{{ doc('fee_global_state_root') }}"
+
+      - name: FEE_TRANSITION_ID
+        description: "{{ doc('fee_transition_id') }}"
+
+      - name: FEE_TRANSITION_PROGRAM
+        description: "{{ doc('fee_transition_program') }}"
+
+      - name: FEE_TRANSITION_FUNCTION
+        description: "{{ doc('fee_transition_function') }}"
+
+      - name: FEE_TRANSITION_INPUTS
+        description: "{{ doc('fee_transition_inputs') }}"
+
+      - name: FEE_TRANSITION_OUTPUTS
+        description: "{{ doc('fee_transition_outputs') }}"

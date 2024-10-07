@@ -1,0 +1,72 @@
+version: 2
+models:
+  - name: silver__blocks
+    description: Records of all blocks that have occurred on Aleo, dating back to the genesis block. 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - NETWORK_ID
+            - BLOCK_ID
+      - fsc_utils.sequence_gaps:
+          column_name: BLOCK_ID
+          config:
+            severity: error
+            error_if: ">10"
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      - name: NETWORK_ID
+        description: "{{ doc('network_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+                - NUMBER
+      - name: TX_COUNT
+        description: "{{ doc('tx_count') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT 
+      - name: PROVING_ROUND
+        tests:
+          - not_null
+      - name: PROVER_ROUNDS
+        description: "{{ doc('prover_rounds') }}"
+        tests:
+          - not_null
+      - name: TRANSACTIONS
+        description: Transactions that occurred during the block.
+        tests: 
+          - not_null
+      - name: BLOCK_REWARDS
+        description: "{{ doc('block_rewards') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: PUZZLE_SOLUTIONS
+        description: "{{ doc('puzzle_solutions') }}"
+        tests:
+          - not_null

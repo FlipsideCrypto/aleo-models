@@ -7,6 +7,8 @@
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)"
 ) }}
 
+-- depends_on: {{ ref('bronze__blocks') }}
+
 SELECT
     DATA :header :metadata :height :: INT AS block_number,
     {{ dbt_utils.generate_surrogate_key(
