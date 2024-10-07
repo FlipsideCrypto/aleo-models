@@ -7,6 +7,8 @@
     tags = ['core','full_test']
 ) }}
 
+-- depends_on: {{ ref('bronze__blocks') }}
+
 WITH base AS (
 
     SELECT

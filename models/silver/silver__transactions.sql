@@ -48,6 +48,7 @@ detail AS (
 )
 SELECT
     block_id,
+    block_timestamp,
     tx_id,
     tx_type,
     CASE 
@@ -70,11 +71,21 @@ SELECT
     DATA,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id']
-    ) }} AS transactions_id,
+    ) }} AS complete_transactions_id,
     partition_key,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM 
     detail
+JOIN (
+    SELECT
+        block_id,
+        block_timestamp
+    FROM
+        {{ ref('silver__blocks') }}
+    WHERE
+        tx_count > 0
+    ) b
+USING(block_id)
 

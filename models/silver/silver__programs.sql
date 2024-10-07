@@ -6,20 +6,36 @@
 
 WITH base as (
     SELECT
-        program_id,
-        program,
+        block_id,
+        block_timestamp,
+        tx_data,
         mappings
-    FROM {{ ref('bronze__programs') }}
+    FROM 
+        {{ ref('bronze__programs') }}
+),
+parsed AS (
+    SELECT
+        block_id AS deployment_block_id,
+        block_timestamp AS deployment_block_timestamp,
+        REGEXP_SUBSTR(tx_data :program :: STRING, 'program\\s+(\\S+);', 1, 1, 'e', 1) AS program_id,
+        tx_data :edition :: INT AS edition,
+        tx_data :program :: STRING AS program,
+        tx_data :verifying_keys :: STRING AS verifying_keys,
+        mappings
+    FROM base
 )
 SELECT
+    deployment_block_id,
+    deployment_block_timestamp,
     program_id,
-    program :data :: STRING AS program,
-    mappings :data :: STRING AS mappings,
+    edition,
+    program,
+    mappings,
+    verifying_keys,
     {{ dbt_utils.generate_surrogate_key(
         ['program_id']
-    ) }} AS complete_program_id,
-    SYSDATE() AS insert_timestamp,
-    SYSDATE() AS modified_timestamp,
-    '{{ invocation_id }}' AS invocation_id
+    ) }} AS complete_program_id
 FROM 
-    base
+    parsed
+ORDER BY
+    program_id

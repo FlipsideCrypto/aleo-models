@@ -4,7 +4,7 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"transactions",
-        "sql_limit" :"10000",
+        "sql_limit" :"500",
         "producer_batch_size" :"1000",
         "worker_batch_size" :"100",
         "sql_source" :"{{this.identifier}}" }
@@ -15,6 +15,7 @@ WITH blocks AS (
 
     SELECT
         block_id,
+        block_timestamp,
         transactions,
         tx_count
     FROM
@@ -25,6 +26,7 @@ WITH blocks AS (
 transaction_ids AS (
     SELECT
         b.block_id,
+        b.block_timestamp,
         t.value:transaction:id::STRING AS transaction_id
     FROM
         blocks b,
@@ -37,6 +39,7 @@ SELECT
         block_id,
         -4
     ) :: INT AS partition_key,
+    block_timestamp,
     {{ target.database }}.live.udf_api(
         'GET',
         '{Service}/transaction/' || transaction_id,

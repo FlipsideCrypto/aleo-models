@@ -7,7 +7,7 @@
 WITH base AS (
     SELECT
         block_id,
-        --block_timestamp, -- to add
+        block_timestamp,
         tx_id,
         tx_data
     FROM
@@ -17,7 +17,7 @@ transitions AS (
   SELECT 
     t.block_id,
     t.tx_id,
-    --t.block_timestamp, -- to add
+    t.block_timestamp,
     f.value AS transition,
     f.index AS transition_index
   FROM base t,
@@ -27,7 +27,7 @@ transitions AS (
 parsed AS (
     SELECT 
         block_id,
-        --block_timestamp, -- to add
+        block_timestamp,
         tx_id,
         transition :id :: STRING AS transition_id,
         transition :program :: STRING AS program_id,
@@ -38,6 +38,7 @@ parsed AS (
 )
 SELECT
     block_id,
+    block_timestamp,
     tx_id,
     transition_id,
     program_id,
