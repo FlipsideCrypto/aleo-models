@@ -4,7 +4,7 @@
 
 ## **What does this documentation cover?**
 The documentation included here details the design of the aleo
- tables and views available via [Flipside Crypto.](https://flipsidecrypto.aleo/) For more information on how these models are built, please see [the github repository.](https://github.com/flipsideCrypto/aleo-models/)
+ tables and views available via [Flipside Crypto.](https://flipsidecrypto.xyz/) For more information on how these models are built, please see [the github repository.](https://github.com/flipsideCrypto/aleo-models/)
 
 ## **How do I use these docs?**
 The easiest way to navigate this documentation is to use the Quick Links below. These links will take you to the documentation for each table, which contains a description, a list of the columns, and other helpful information.
@@ -65,7 +65,7 @@ Note that you can also right-click on models to interactively filter and explore
 
 
 ### **More information**
-- [Flipside](https://flipsidecrypto.aleo/)
+- [Flipside](https://flipsidecrypto.xyz/)
 - [Velocity](https://app.flipsidecrypto.com/velocity?nav=Discover)
 - [Tutorials](https://docs.flipsidecrypto.com/our-data/tutorials)
 - [Github](https://github.com/FlipsideCrypto/aleo-models)

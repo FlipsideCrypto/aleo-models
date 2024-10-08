@@ -4,10 +4,11 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"blocks",
-        "sql_limit" :"10000",
-        "producer_batch_size" :"1000",
+        "sql_limit" :"3000",
+        "producer_batch_size" :"100",
         "worker_batch_size" :"100",
-        "sql_source" :"{{this.identifier}}" }
+        "sql_source" :"{{this.identifier}}",
+        "order_by_column": "block_number",}
     )
 ) }}
 -- depends_on: {{ ref('streamline__blocks_complete') }}
@@ -36,8 +37,7 @@ SELECT
             'application/json'
         ),{},
         'Vault/dev/aleo/mainnet'
-    ) AS request
+    ) AS request,
+    block_number
 FROM
     blocks
-ORDER BY
-    block_number
