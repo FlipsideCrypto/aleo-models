@@ -5,87 +5,75 @@
 ) }}
 
 WITH base AS (
-    SELECT
-        t.VALUE :BLOCK_ID_REQUESTED :: INT AS block_id,
-        t.DATA :id :: STRING as tx_id,
-        t.DATA :type AS tx_type,
-        CASE WHEN f.key :: STRING NOT IN ('id', 'type', 'fee') THEN f.value END AS tx_msg,
-        CASE WHEN f.key :: STRING = 'fee' THEN f.value END AS fee_msg,
-        t.DATA,
-        t.PARTITION_KEY
-    FROM
-        {% if is_incremental() %}
-        {{ ref('bronze__transactions') }} t,
-        {% else %}
-        {{ ref('bronze__transactions_FR') }} t,
-        {% endif %}
-        LATERAL FLATTEN(input => t.DATA) AS f
 
-    {% if is_incremental() %}
-    WHERE inserted_timestamp >= DATEADD(
-        MINUTE,
-        -5,(
-            SELECT
-                MAX(modified_timestamp)
-            FROM
-                {{ this }}
-        )
-    )
-    {% endif %}
-
-),
-detail AS (
     SELECT
         block_id,
-        tx_id,
-        MAX(COALESCE(tx_type, '')) AS tx_type,
-        PARSE_JSON(MAX(COALESCE(tx_msg, ''))) AS tx_msg,
-        PARSE_JSON(MAX(COALESCE(fee_msg, ''))) AS fee_msg,
-        DATA,
-        PARTITION_KEY
-    FROM base
-    GROUP BY ALL
+        block_timestamp,
+        f.value :index :: INT AS INDEX,
+        f.value :transaction :id :: STRING AS tx_id,
+        f.value :status :: STRING AS status,
+        f.value :type :: STRING AS TYPE,
+        {# f.value :transaction :type :: STRING AS inner_type, #}
+        TRY_PARSE_JSON(
+            f.value :transaction :fee
+        ) AS fee_msg,
+        TRY_PARSE_JSON(
+            f.value :transaction :execution
+        ) AS execution_msg,
+        TRY_PARSE_JSON(
+            f.value :transaction :deployment
+        ) AS deployment_msg,
+        TRY_PARSE_JSON(
+            f.value :transaction :owner
+        ) AS owner_msg,
+        TRY_PARSE_JSON(
+            f.value: finalize
+        ) AS finalize_msg,
+        TRY_PARSE_JSON(
+            f.value: rejected
+        ) AS rejected_msg,
+        f.value AS DATA
+    FROM
+        {{ ref('silver__blocks') }}
+        t,
+        LATERAL FLATTEN(
+            input => t.data :transactions
+        ) f
+    WHERE
+        tx_id IS NOT NULL
+
+{% if is_incremental() %}
+AND modified_timestamp >= DATEADD(
+    MINUTE,
+    -5,(
+        SELECT
+            MAX(modified_timestamp)
+        FROM
+            {{ this }}
+    )
+)
+{% endif %}
 )
 SELECT
     block_id,
     block_timestamp,
+    INDEX,
     tx_id,
-    tx_type,
-    CASE 
-        WHEN tx_type = 'fee' then fee_msg
-        ELSE tx_msg
-    END as tx_data,
+    status,
+    TYPE,
+    {# inner_type, #}
     fee_msg,
-    COALESCE(ARRAY_SIZE(tx_data :transitions) :: NUMBER, 0) AS tx_transition_count,
-    CASE 
-        WHEN tx_type = 'fee' then fee_msg :transition
-        ELSE tx_msg :transitions
-    END as tx_transitions,
-    fee_msg :proof :: STRING AS fee_proof,
-    fee_msg :global_state_root :: STRING AS fee_global_state_root,
-    fee_msg :transition :id :: STRING AS fee_transition_id,
-    fee_msg :transition :program :: STRING AS fee_transition_program,
-    fee_msg :transition :function :: STRING AS fee_transition_function,
-    fee_msg :transition :inputs :: STRING AS fee_transition_inputs,
-    fee_msg :transition :outputs :: STRING AS fee_transition_outputs,
+    execution_msg,
+    deployment_msg,
+    owner_msg,
+    finalize_msg,
+    rejected_msg,
     DATA,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id']
-    ) }} AS complete_transactions_id,
-    partition_key,
+    ) }} AS transactions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
-FROM 
-    detail
-JOIN (
-    SELECT
-        block_id,
-        block_timestamp
-    FROM
-        {{ ref('silver__blocks') }}
-    WHERE
-        tx_count > 0
-    ) b
-USING(block_id)
-
+FROM
+    base

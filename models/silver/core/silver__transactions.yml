@@ -20,42 +20,39 @@ models:
           - unique
           - not_null
 
+      - name: status
+        tests:
+          - not_null
+      
       - name: TX_TYPE
         description: "{{ doc('tx_type') }}"
         tests:
           - not_null
 
-      - name: TX_DATA
-        description: "{{ doc('tx_data') }}"
-
-      - name: FEE_MSG
-        description: "{{ doc('fee_msg') }}"
-
-      - name: TX_TRANSITION_COUNT
-        description: "{{ doc('tx_transition_count') }}"
+      - name: inner_type
         tests:
           - not_null
 
-      - name: TX_TRANSITIONS
-        description: "{{ doc('tx_transitions') }}"
+      - name: FEE_MSG
+        description: "{{ doc('fee_msg') }}"
+        tests:
+          - not_null
+        
+      - name: execution_msg
+ 
 
-      - name: FEE_PROOF
-        description: "{{ doc('fee_proof') }}"
+      - name: deployment_msg
+ 
 
-      - name: FEE_GLOBAL_STATE_ROOT
-        description: "{{ doc('fee_global_state_root') }}"
+      - name: owner_msg
+ 
 
-      - name: FEE_TRANSITION_ID
-        description: "{{ doc('fee_transition_id') }}"
+      - name: finalize_msg
+        tests:
+          - not_null
 
-      - name: FEE_TRANSITION_PROGRAM
-        description: "{{ doc('fee_transition_program') }}"
+      - name: rejected_msg
+ 
 
-      - name: FEE_TRANSITION_FUNCTION
-        description: "{{ doc('fee_transition_function') }}"
 
-      - name: FEE_TRANSITION_INPUTS
-        description: "{{ doc('fee_transition_inputs') }}"
-
-      - name: FEE_TRANSITION_OUTPUTS
-        description: "{{ doc('fee_transition_outputs') }}"
+       

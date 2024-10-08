@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-    unique_key = "block_id",
+    unique_key = "fact_blocks_id",
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
@@ -11,13 +11,18 @@
 SELECT
     block_id,
     block_timestamp,
-    network_id,
+    CASE
+        WHEN network_id = 0 THEN 'mainnet'
+    END AS network,
+    'aleo' AS blockchain,
     tx_count,
-    proving_round,
-    prover_rounds,
-    block_rewards,
-    puzzle_solutions,
-    {{ dbt_utils.generate_surrogate_key(['block_id']) }} AS fact_blocks_id,
+    block_hash,
+    previous_hash,
+    ROUND,
+    coinbase_target,
+    cumulative_proof_target,
+    cumulative_weight,
+    {{ dbt_utils.generate_surrogate_key(['block_id','network_id']) }} AS fact_blocks_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
@@ -26,9 +31,14 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    block_timestamp >= DATEADD(
-        'hour',
-        -1,
-        (SELECT MAX(block_timestamp) FROM {{ this }})
+    modified_timestamp >= DATEADD(
+        'minute',
+        -5,
+        (
+            SELECT
+                MAX(modified_timestamp)
+            FROM
+                {{ this }}
+        )
     )
 {% endif %}
