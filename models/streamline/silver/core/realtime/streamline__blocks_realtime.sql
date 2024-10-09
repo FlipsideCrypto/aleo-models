@@ -8,7 +8,7 @@
         "producer_batch_size" :"5000",
         "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}",
-        "order_by_column": "block_number",}
+        "order_by_column": "block_number" }
     )
 ) }}
 -- depends_on: {{ ref('streamline__blocks_complete') }}
