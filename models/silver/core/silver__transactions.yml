@@ -4,7 +4,7 @@ models:
   - name: silver__transactions
     description: "This model contains detailed information about transactions in the Aleo blockchain."
     columns:
-      - name: BLOCK_ID
+      - name: block_id
         description: "{{ doc('block_id') }}"
         tests:
           - not_null

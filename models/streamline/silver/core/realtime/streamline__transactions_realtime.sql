@@ -39,7 +39,7 @@ transaction_ids AS (
                 A.*
             FROM
                 transaction_ids A
-                LEFT JOIN {{ ref('streamline__testnet_transactions_complete') }}
+                LEFT JOIN {{ ref('streamline_transactions_complete') }}
         ) (
             SELECT
                 block_id,

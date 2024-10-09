@@ -10,19 +10,20 @@
 
 SELECT
     block_id,
+    block_hash,
     block_timestamp,
     CASE
         WHEN network_id = 0 THEN 'mainnet'
     END AS network,
-    'aleo' AS blockchain,
     tx_count,
-    block_hash,
     previous_hash,
     ROUND,
     coinbase_target,
     cumulative_proof_target,
     cumulative_weight,
-    {{ dbt_utils.generate_surrogate_key(['block_id','network_id']) }} AS fact_blocks_id,
+    block_reward,
+    puzzle_reward,
+    {{ dbt_utils.generate_surrogate_key(['block_id']) }} AS fact_blocks_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id

@@ -71,7 +71,7 @@ WHERE
 
 qualify(ROW_NUMBER() over (PARTITION BY network_id, block_id
 ORDER BY
-    block_id DESC, inserted_timestamp DESC)) = 1
+    inserted_timestamp DESC)) = 1
 )
 SELECT
     block_id,
@@ -84,10 +84,17 @@ SELECT
     coinbase_target,
     cumulative_proof_target,
     cumulative_weight,
-    {# header, #}
+    CASE
+        WHEN DATA :ratifications [0] :type = 'block_reward' THEN DATA :ratifications [0] :amount :: bigint
+        WHEN DATA :ratifications [1] :type = 'block_reward' THEN DATA :ratifications [1] :amount :: bigint
+    END block_reward,
+    CASE
+        WHEN DATA :ratifications [0] :type = 'puzzle_reward' THEN DATA :ratifications [0] :amount :: bigint
+        WHEN DATA :ratifications [1] :type = 'puzzle_reward' THEN DATA :ratifications [1] :amount :: bigint
+    END puzzle_reward,
     DATA,
     {{ dbt_utils.generate_surrogate_key(
-        ['network_id','block_id']
+        ['block_id']
     ) }} AS blocks_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

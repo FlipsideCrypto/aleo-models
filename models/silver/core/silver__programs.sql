@@ -23,19 +23,19 @@ WITH base AS (
     FROM
         {{ ref('silver__transactions') }}
     WHERE
-        deployment_msg IS NOT NULL {# {% if is_incremental() %}
-        AND modified_timestamp >= DATEADD(
-            MINUTE,
-            -5,(
-                SELECT
-                    MAX(modified_timestamp)
-                FROM
-                    {{ this }}
-            )
-        )
-    {% endif %}
+        deployment_msg IS NOT NULL
 
-    #}
+{% if is_incremental() %}
+AND modified_timestamp >= DATEADD(
+    MINUTE,
+    -5,(
+        SELECT
+            MAX(modified_timestamp)
+        FROM
+            {{ this }}
+    )
+)
+{% endif %}
 )
 SELECT
     block_id AS deployment_block_id,

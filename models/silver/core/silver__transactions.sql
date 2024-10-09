@@ -12,8 +12,7 @@ WITH base AS (
         f.value :index :: INT AS INDEX,
         f.value :transaction :id :: STRING AS tx_id,
         f.value :status :: STRING AS status,
-        f.value :type :: STRING AS TYPE,
-        {# f.value :transaction :type :: STRING AS inner_type, #}
+        f.value :type :: STRING AS tx_type,
         TRY_PARSE_JSON(
             f.value :transaction :fee
         ) AS fee_msg,
@@ -60,14 +59,14 @@ SELECT
     INDEX,
     tx_id,
     status,
-    TYPE,
-    {# inner_type, #}
+    tx_type,
     fee_msg,
     execution_msg,
     deployment_msg,
     owner_msg,
     finalize_msg,
     rejected_msg,
+    COALESCE(ARRAY_SIZE(execution_msg :transitions), ARRAY_SIZE(rejected_msg :transitions)) AS transition_count,
     DATA,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id']

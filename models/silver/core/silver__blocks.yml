@@ -6,14 +6,14 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - NETWORK_ID
-            - BLOCK_ID
+            - block_id
       - fsc_utils.sequence_gaps:
-          column_name: BLOCK_ID
+          column_name: block_id
           config:
             severity: error
             error_if: ">10"
     columns:
-      - name: BLOCK_ID
+      - name: block_id
         description: "{{ doc('block_id') }}"
         tests:
           - not_null
