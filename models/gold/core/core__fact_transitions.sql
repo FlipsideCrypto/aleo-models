@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-    unique_key = "transition_id",
+    unique_key = "fact_transitions_id",
     incremental_strategy = 'merge',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = ['block_timestamp::DATE'],
@@ -12,14 +12,17 @@ SELECT
     block_id,
     block_timestamp,
     tx_id,
+    INDEX,
     transition_id,
+    succeeded,
+    TYPE,
     program_id,
-    transition_function,
-    transition_inputs,
-    transition_outputs,
+    FUNCTION,
+    inputs,
+    outputs,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id']
-    ) }} AS complete_transition_id,
+    ) }} AS fact_transitions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
@@ -28,12 +31,12 @@ FROM
 
 {% if is_incremental() %}
 WHERE
-    block_timestamp >= DATEADD(
-        'hour',
-        -1,
+    modified_timestamp >= DATEADD(
+        'minute',
+        -5,
         (
             SELECT
-                MAX(block_timestamp)
+                MAX(modified_timestamp)
             FROM
                 {{ this }}
         )

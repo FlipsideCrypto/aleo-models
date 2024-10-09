@@ -52,7 +52,7 @@ WITH base AS (
         -- use to identify address of block producer (validator) -- IN FINAL
         object_keys(
             DATA :authority :subdag :subdag
-        ) AS prover_rounds,
+        ) AS rounds,
         -- IN FINAL, REPLACES PROPOSER ADDRESS
         {# DATA :transactions AS transactions,
         -- IN FINAL
@@ -81,6 +81,7 @@ SELECT
     block_hash,
     previous_hash,
     ROUND,
+    rounds,
     coinbase_target,
     cumulative_proof_target,
     cumulative_weight,

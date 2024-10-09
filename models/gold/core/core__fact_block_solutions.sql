@@ -24,7 +24,7 @@ SELECT
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
-    {{ ref('silver__blocks_solutions') }}
+    {{ ref('silver__block_solutions') }}
 
 {% if is_incremental() %}
 WHERE

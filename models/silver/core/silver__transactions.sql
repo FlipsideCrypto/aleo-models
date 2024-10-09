@@ -1,6 +1,10 @@
 {{ config(
-    materialized = 'table',
+    materialized = 'incremental',
     unique_key = "tx_id",
+    incremental_strategy = 'merge',
+    incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE) from " ~ generate_tmp_view_name(this) ~ ")"],
+    merge_exclude_columns = ["inserted_timestamp"],
+    cluster_by = ['block_timestamp::DATE'],
     tags = ['core','full_test']
 ) }}
 
@@ -66,7 +70,7 @@ SELECT
     owner_msg,
     finalize_msg,
     rejected_msg,
-    COALESCE(ARRAY_SIZE(execution_msg :transitions), ARRAY_SIZE(rejected_msg :transitions)) AS transition_count,
+    COALESCE(ARRAY_SIZE(execution_msg :transitions), ARRAY_SIZE(rejected_msg :execution :transitions)) AS transition_count,
     DATA,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id']

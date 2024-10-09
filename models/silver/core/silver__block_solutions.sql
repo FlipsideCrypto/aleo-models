@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "blocks_solutions_id",
+    unique_key = "block_solutions_id",
     incremental_strategy = 'merge',
     incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE) from " ~ generate_tmp_view_name(this) ~ ")"],
     merge_exclude_columns = ["inserted_timestamp"],
@@ -58,7 +58,7 @@ SELECT
     ) AS reward,
     {{ dbt_utils.generate_surrogate_key(
         ['block_id','solution_id']
-    ) }} AS blocks_solutions_id,
+    ) }} AS block_solutions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id

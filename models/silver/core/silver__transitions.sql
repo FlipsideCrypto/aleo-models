@@ -1,15 +1,37 @@
 {{ config(
-    materialized = 'table',
+    materialized = 'incremental',
     unique_key = "transition_id",
+    incremental_strategy = 'merge',
+    incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE) from " ~ generate_tmp_view_name(this) ~ ")"],
+    merge_exclude_columns = ["inserted_timestamp"],
+    cluster_by = ['block_timestamp::DATE'],
     tags = ['core','full_test']
 ) }}
 
 WITH base AS (
 
     SELECT
-        *
+        block_id,
+        tx_id,
+        block_timestamp,
+        TRUE AS succeeded,
+        execution_msg,
+        rejected_msg
     FROM
         {{ ref('silver__transactions') }}
+
+{% if is_incremental() %}
+WHERE
+    modified_timestamp >= DATEADD(
+        MINUTE,
+        -5,(
+            SELECT
+                MAX(modified_timestamp)
+            FROM
+                {{ this }}
+        )
+    )
+{% endif %}
 ),
 exe_trans AS (
     SELECT
@@ -38,7 +60,7 @@ rej_trans AS (
     FROM
         base t,
         LATERAL FLATTEN(
-            input => rejected_msg :transitions
+            input => rejected_msg :execution :transitions
         ) f
 ),
 transitions AS (

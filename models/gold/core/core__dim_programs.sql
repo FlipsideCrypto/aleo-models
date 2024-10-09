@@ -11,7 +11,7 @@ SELECT
     program_id,
     edition,
     program,
-    mappings,
+    {# mappings, #}
     verifying_keys,
     {{ dbt_utils.generate_surrogate_key(
         ['program_id']
