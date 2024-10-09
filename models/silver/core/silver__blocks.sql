@@ -63,10 +63,14 @@ WITH base AS (
 
 {% if is_incremental() %}
 {{ ref('bronze__blocks') }}
-WHERE
-    inserted_timestamp >= '{{ max_mod }}'
 {% else %}
     {{ ref('bronze__blocks_FR') }}
+{% endif %}
+WHERE
+    block_id IS NOT NULL
+
+{% if is_incremental() %}
+AND inserted_timestamp >= '{{ max_mod }}'
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY network_id, block_id

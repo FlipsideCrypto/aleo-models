@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: core__fact_block_round_batches
+    description: Records of all rounds and batches for blocks that have occurred on the Aleo network, dating back to the genesis block.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - batch_id
+            - block_id
+    columns:
+      - name: block_id
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_NTZ
+      - name: ROUND
+        # description: "{{ doc('network_id') }}"
+        # tests:
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - STRING
+        #         - VARCHAR
+      - name: batch_id
+        # description: "{{ doc('tx_count') }}"
+        # tests: 
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT 
+      - name: author
+        # description: "{{ doc('previous_hash') }}"
+        # tests:
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+      - name: committee_id
+        # description: "{{ doc('proving_round') }}"
+        # tests: 
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - NUMBER
+        #         - FLOAT
+      - name: transmission_ids
+        # description: "{{ doc('prover_rounds') }}"
+        # tests: 
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - VARIANT
+      - name: fact_block_round_batches_id
+        description: '{{ doc("pk") }}'   
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - unique
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'          
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null

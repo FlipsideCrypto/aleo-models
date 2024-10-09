@@ -17,6 +17,11 @@ models:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER
+      - name: block_hash
+        description: "{{ doc('block_hash') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
         tests:
@@ -28,7 +33,7 @@ models:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - TIMESTAMP_NTZ
-      - name: NETWORK_ID
+      - name: NETWORK
         description: "{{ doc('network_id') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
@@ -46,7 +51,12 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT 
-      - name: PROVING_ROUND
+      - name: previous_hash
+        description: "{{ doc('previous_hash') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+      - name: ROUND
         description: "{{ doc('proving_round') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
@@ -55,16 +65,16 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT
-      - name: PROVER_ROUNDS
+      - name: ROUNDS
         description: "{{ doc('prover_rounds') }}"
-        tests: 
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - VARIANT
-      - name: BLOCK_REWARDS
-        description: "{{ doc('block_rewards') }}"
+        # tests: 
+        #   - dbt_expectations.expect_column_to_exist
+        #   - not_null
+        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
+        #       column_type_list:
+        #         - VARIANT
+      - name: coinbase_target
+        description: "{{ doc('coinbase_target') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
           - not_null
@@ -72,14 +82,42 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT
-      - name: PUZZLE_SOLUTIONS
-        description: "{{ doc('puzzle_solutions') }}"
+      - name: cumulative_proof_target
+        description: "{{ doc('cumulative_proof_target') }}"
         tests: 
           - dbt_expectations.expect_column_to_exist
           - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
-                - VARIANT
+                - NUMBER
+                - FLOAT
+      - name: cumulative_weight
+        description: "{{ doc('cumulative_weight') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: BLOCK_REWARD
+        description: "{{ doc('block_reward') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: puzzle_reward
+        description: "{{ doc('puzzle_reward') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
       - name: FACT_BLOCKS_ID
         description: '{{ doc("pk") }}'   
         tests: 

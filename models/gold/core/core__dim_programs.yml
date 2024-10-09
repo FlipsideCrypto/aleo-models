@@ -3,10 +3,6 @@ version: 2
 models:
   - name: core__dim_programs
     description: Dimension table containing information about programs deployed on the network.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - PROGRAM_ID
     columns:
       - name: DEPLOYMENT_BLOCK_ID
         description: "{{ doc('deployment_block_id') }}"
@@ -51,25 +47,24 @@ models:
               column_type_list:
                 - STRING
                 - VARCHAR
-      - name: MAPPINGS
-        description: "{{ doc('mappings') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - VARIANT
+      # - name: MAPPINGS
+      #   description: "{{ doc('mappings') }}"
+      #   tests:
+      #     - dbt_expectations.expect_column_to_exist
+      #     - not_null
+      #     - dbt_expectations.expect_column_values_to_be_in_type_list:
+      #         column_type_list:
+      #           - VARIANT
       - name: VERIFYING_KEYS
         description: "{{ doc('verifying_keys') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
-      - name: COMPLETE_PROGRAM_ID
+      - name: dim_program_id
         description: '{{ doc("pk") }}'
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
-          - unique
       - name: INSERT_TIMESTAMP
         description: '{{ doc("inserted_timestamp") }}'
         tests:

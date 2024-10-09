@@ -21,7 +21,7 @@ SELECT
     inputs,
     outputs,
     {{ dbt_utils.generate_surrogate_key(
-        ['tx_id','transition_id']
+        ['transition_id']
     ) }} AS fact_transitions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

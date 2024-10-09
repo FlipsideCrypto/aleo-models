@@ -66,7 +66,10 @@ SELECT
     owner_msg,
     finalize_msg,
     rejected_msg,
-    transition_count,
+    COALESCE(
+        transition_count,
+        0
+    ) AS transition_count,
     COALESCE(
         fee_raw,
         0
