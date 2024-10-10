@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: silver__transitions
-    description: "This model contains detailed information about transitions within transactions on the Aleo blockchain."
+  - name: silver__transitions_fee
+    description: "This model contains detailed information about fee transitions within transactions on the Aleo blockchain."
     columns:
       - name: block_id
         description: "{{ doc('block_id') }}"

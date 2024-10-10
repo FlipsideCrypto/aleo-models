@@ -3,13 +3,8 @@ version: 2
 models:
   - name: core__fact_transactions
     description: Fact table containing information about all transactions on the network.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - BLOCK_ID
-            - TX_ID
     columns:
-      - name: BLOCK_ID
+      - name: block_id
         description: "{{ doc('block_id') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
@@ -33,6 +28,24 @@ models:
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
+          - unique
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - STRING
+                - VARCHAR
+      - name: INDEX
+        description: "{{ doc('tx_index') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+      - name: tx_succeeded
+        description: "{{ doc('tx_succeeded') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - STRING
@@ -46,15 +59,42 @@ models:
               column_type_list:
                 - STRING
                 - VARCHAR
-      - name: TX_DATA
-        description: "{{ doc('tx_data') }}"
+      - name: execution_msg
+        description: "{{ doc('execution_msg') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
-          - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - VARIANT
-      - name: TX_TRANSITION_COUNT
+      - name: deployment_msg
+        description: "{{ doc('deployment_msg') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - VARIANT
+      - name: owner_msg
+        description: "{{ doc('owner_msg') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - VARIANT
+      - name: finalize_msg
+        description: "{{ doc('finalize_msg') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - VARIANT
+      - name: rejected_msg
+        description: "{{ doc('rejected_msg') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - VARIANT
+      - name: TRANSITION_COUNT
         description: "{{ doc('tx_transition_count') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
@@ -62,66 +102,11 @@ models:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER
-      - name: FEE_PROOF
-        description: "{{ doc('fee_proof') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
-      - name: FEE_GLOBAL_STATE_ROOT
-        description: "{{ doc('fee_global_state_root') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
-      - name: FEE_TRANSITION_ID
-        description: "{{ doc('fee_transition_id') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
-      - name: FEE_TRANSITION_PROGRAM
-        description: "{{ doc('fee_transition_program') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
-      - name: FEE_TRANSITION_FUNCTION
-        description: "{{ doc('fee_transition_function') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
-      - name: FEE_TRANSITION_INPUTS
-        description: "{{ doc('fee_transition_inputs') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - VARIANT
-      - name: FEE_TRANSITION_OUTPUTS
-        description: "{{ doc('fee_transition_outputs') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - VARIANT
-      - name: COMPLETE_TRANSACTIONS_ID
+      - name: FACT_TRANSACTIONS_ID
         description: '{{ doc("pk") }}'
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
-          - unique
       - name: INSERTED_TIMESTAMP
         description: '{{ doc("inserted_timestamp") }}'
         tests:

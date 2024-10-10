@@ -6,14 +6,14 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - NETWORK_ID
-            - BLOCK_ID
+            - block_id
       - fsc_utils.sequence_gaps:
-          column_name: BLOCK_ID
+          column_name: block_id
           config:
             severity: error
             error_if: ">10"
     columns:
-      - name: BLOCK_ID
+      - name: block_id
         description: "{{ doc('block_id') }}"
         tests:
           - not_null
@@ -47,26 +47,21 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT 
-      - name: PROVING_ROUND
+      - name: block_hash
         tests:
           - not_null
-      - name: PROVER_ROUNDS
-        description: "{{ doc('prover_rounds') }}"
+      - name: previous_hash
         tests:
           - not_null
-      - name: TRANSACTIONS
-        description: Transactions that occurred during the block.
-        tests: 
-          - not_null
-      - name: BLOCK_REWARDS
-        description: "{{ doc('block_rewards') }}"
+      - name: ROUND
         tests:
           - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
-      - name: PUZZLE_SOLUTIONS
-        description: "{{ doc('puzzle_solutions') }}"
+      - name: coinbase_target
+        tests:
+          - not_null
+      - name: cumulative_proof_target
+        tests:
+          - not_null
+      - name: cumulative_weight
         tests:
           - not_null
