@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: core__fact_block_solutions
-    description: Records of all prover solutions for each block.
+    description: Records of all prover solutions for each block, including block details, rewards, and solution-specific information.
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -37,62 +37,40 @@ models:
               column_type_list:
                 - NUMBER
       - name: address
-        # description: "{{ doc('tx_count') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - STRING
+        description: "{{ doc('address') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: counter
-        # description: "{{ doc('previous_hash') }}"
-        # tests:
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
+        description: "A counter value associated with the solution."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: epoch_hash
-        # description: "{{ doc('proving_round') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - NUMBER
-        #         - FLOAT
+        description: "The hash of the epoch in which the solution was found."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: solution_id
-        # description: "{{ doc('prover_rounds') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - VARIANT
+        description: "{{ doc('solution_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+          - unique
       - name: target
-        # description: "{{ doc('coinbase_target') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - NUMBER
-        #         - FLOAT
+        description: "The target difficulty for the block solution."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: reward_raw
-        # description: "{{ doc('cumulative_proof_target') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - NUMBER
-        #         - FLOAT
+        description: "The raw value of the reward for solving the block."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: reward
-        # description: "{{ doc('cumulative_weight') }}"
-        # tests: 
-        #   - dbt_expectations.expect_column_to_exist
-        #   - not_null
-        #   - dbt_expectations.expect_column_values_to_be_in_type_list:
-        #       column_type_list:
-        #         - NUMBER
-        #         - FLOAT
+        description: "The processed or formatted value of the reward for solving the block."
+        tests:
+          - dbt_expectations.expect_column_to_exist
       - name: fact_block_solutions_id
         description: '{{ doc("pk") }}'   
         tests: 

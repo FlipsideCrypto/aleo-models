@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = ['program_id'],
+    unique_key = ['dim_program_id'],
     incremental_strategy = 'merge',
+    merge_exclude_columns = ['inserted_timestamp'],
     tags = ['core','full_test']
 ) }}
 
@@ -11,7 +12,6 @@ SELECT
     program_id,
     edition,
     program,
-    {# mappings, #}
     verifying_keys,
     {{ dbt_utils.generate_surrogate_key(
         ['program_id']
@@ -21,3 +21,8 @@ SELECT
     '{{ invocation_id }}' AS invocation_id
 FROM
     {{ ref('silver__programs') }}
+UNION ALL
+SELECT 
+    * 
+FROM 
+    {{ ref('silver__custom_programs') }}

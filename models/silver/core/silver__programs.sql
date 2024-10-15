@@ -46,7 +46,6 @@ SELECT
     TRY_PARSE_JSON(
         deployment_msg :verifying_keys
     ) AS verifying_keys,
-    {# mappings, #}
     {{ dbt_utils.generate_surrogate_key(
         ['program_id','edition']
     ) }} AS programs_id,

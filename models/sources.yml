@@ -5,16 +5,13 @@ sources:
     database: "{{ 'crosschain' if target.database == 'aleo' else 'crosschain_dev' }}"
     schema: core
     tables:
-      - name: dim_date_hours
-      - name: address_tags
-      - name: dim_dates
+      - name: dim_labels
 
   - name: crosschain_silver
     database: "{{ 'crosschain' if target.database == 'ALEO' else 'crosschain_dev' }}"
     schema: silver
     tables:
       - name: number_sequence
-      - name: labels_combined
 
   - name: bronze_streamline
     database: streamline
@@ -23,6 +20,7 @@ sources:
     tables:
       - name: blocks
       - name: transactions
+      
   - name: github_actions
     database: ALEO
     schema: github_actions
