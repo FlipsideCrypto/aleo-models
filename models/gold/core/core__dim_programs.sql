@@ -6,23 +6,42 @@
     tags = ['core','full_test']
 ) }}
 
-SELECT
-    deployment_block_id,
-    deployment_block_timestamp,
-    program_id,
-    edition,
-    program,
-    verifying_keys,
-    {{ dbt_utils.generate_surrogate_key(
-        ['program_id']
-    ) }} AS dim_program_id,
-    SYSDATE() AS insert_timestamp,
-    SYSDATE() AS modified_timestamp,
-    '{{ invocation_id }}' AS invocation_id
-FROM
-    {{ ref('silver__programs') }}
+WITH base AS (
+    SELECT
+        deployment_block_id,
+        deployment_block_timestamp,
+        program_id,
+        edition,
+        program,
+        verifying_keys,
+        {{ dbt_utils.generate_surrogate_key(
+            ['program_id']
+        ) }} AS dim_program_id,
+        SYSDATE() AS insert_timestamp,
+        SYSDATE() AS modified_timestamp,
+        '{{ invocation_id }}' AS invocation_id
+    FROM
+        {{ ref('silver__programs') }}
+
+    {% if is_incremental() %}
+    WHERE
+        modified_timestamp >= (
+            SELECT
+                MAX(
+                    modified_timestamp
+                )
+            FROM
+                {{ this }}
+        )
+        {% endif %}
+),
+
+custom_programs AS (
+    SELECT 
+        * 
+    FROM 
+        {{ ref('silver__custom_programs') }}
+)
+SELECT * FROM base
 UNION ALL
-SELECT 
-    * 
-FROM 
-    {{ ref('silver__custom_programs') }}
+SELECT * FROM custom_programs

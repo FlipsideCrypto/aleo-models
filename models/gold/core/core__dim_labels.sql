@@ -8,7 +8,7 @@
 ) }}
 
 SELECT
-    'lava' AS blockchain,
+    'aleo' AS blockchain,
     creator,
     address,
     address_name,
