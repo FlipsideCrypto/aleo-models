@@ -1,15 +1,14 @@
-name: dbt_run_streamline_blocks_realtime
-run-name: dbt_run_streamline_blocks_realtime
+name: dbt_test_monthly
+run-name: dbt_test_monthly
 
 on:
   workflow_dispatch:
-    branches:
-      - "main"
-  #schedule:
-  #  - cron: '0 * * * *'
-    
+  schedule:
+    # Runs 2nd of month at 6AM” (see https://crontab.guru)
+    - cron: '0 6 2 * *'
+
 env:
-  DBT_PROFILES_DIR: "${{ vars.DBT_PROFILES_DIR }}"
+  DBT_PROFILES_DIR: ./
 
   ACCOUNT: "${{ vars.ACCOUNT }}"
   ROLE: "${{ vars.ROLE }}"
@@ -43,4 +42,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -s 2+models/streamline/silver/core/realtime/streamline__blocks_realtime.sql  --vars '{STREAMLINE_INVOKE_STREAMS: True}'
+          dbt test -m  "aleo_models,tag:full_test"

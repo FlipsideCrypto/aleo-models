@@ -1,0 +1,52 @@
+version: 2
+models:
+  - name: core__dim_labels
+    description: A hand curated table containing address names / labels for popular contracts, validators, tokens, etc. 
+    columns:
+      - name: BLOCKCHAIN
+        description: The name of the blockchain
+        tests:
+          - not_null
+      - name: CREATOR
+        description: The name of the creator of the label
+        tests:
+          - not_null
+      - name: ADDRESS
+        description: Address that the label is for. This is the field that should be used to join other tables with labels. 
+        tests:
+          - not_null
+      - name: ADDRESS_NAME
+        description: The name associated with the address
+        tests:
+          - not_null
+      - name: LABEL_TYPE
+        description: A high-level category describing the addresses main function or ownership
+        tests:
+          - not_null
+      - name: LABEL_SUBTYPE
+        description: A sub-category nested within label type providing further detail
+        tests:
+          - not_null
+      - name: PROJECT_NAME
+        description: Name of the project or entity associated with the address
+        tests:
+          - not_null
+      - name: DIM_LABELS_ID
+        description: Unique identifier for each label record
+        tests:
+          - not_null
+          - unique
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+        tests:
+          - not_null
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'  
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCKCHAIN
+            - ADDRESS

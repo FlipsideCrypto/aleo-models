@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: core__fact_block_round_batches
-    description: Records of all rounds and batches for blocks that have occurred on the Aleo network, dating back to the genesis block.
+    description: Records of rounds and batches within blocks on the Aleo network, capturing the consensus and block production process from genesis onward.
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

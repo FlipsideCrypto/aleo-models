@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "transition_id",
+    unique_key = "transitions_id",
     incremental_strategy = 'merge',
     incremental_predicates = ["COALESCE(DBT_INTERNAL_DEST.block_timestamp::DATE,'2099-12-31') >= (select min(block_timestamp::DATE) from " ~ generate_tmp_view_name(this) ~ ")"],
     merge_exclude_columns = ["inserted_timestamp"],

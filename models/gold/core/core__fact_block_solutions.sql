@@ -1,10 +1,11 @@
 {{ config(
     materialized = 'incremental',
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-    unique_key = "fact_block_solutions_id",
+    unique_key = ['fact_block_solutions_id'],
     incremental_strategy = 'merge',
-    merge_exclude_columns = ["inserted_timestamp"],
+    merge_exclude_columns = ['inserted_timestamp'],
     cluster_by = ['block_timestamp::DATE'],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(solution_id,address,epoch_hash);",
     tags = ['core', 'full_test']
 ) }}
 
