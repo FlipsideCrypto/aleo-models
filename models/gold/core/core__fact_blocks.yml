@@ -6,7 +6,7 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - NETWORK_ID
+            - NETWORK
             - block_id
     columns:
       - name: block_id

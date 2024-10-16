@@ -18,9 +18,9 @@ models:
         description: "{{ doc('tx_id') }}"
         tests:
           - not_null
-      
-      - name: INDEX
-        description: "{{ doc('program_id') }}"
+
+      - name: SUCCEEDED
+        description: "{{ doc('succeeded') }}"
         tests:
           - not_null
 
@@ -29,16 +29,11 @@ models:
         tests:
           - not_null
           - unique
-
-      - name: TYPE
-        tests:
-          - not_null
           
       - name: PROGRAM_ID
         description: "{{ doc('program_id') }}"
         tests:
           - not_null
-
       - name: FUNCTION
         description: "{{ doc('transition_function') }}"
         tests:
@@ -50,7 +45,7 @@ models:
       - name: OUTPUTS
         description: "{{ doc('transition_outputs') }}"
 
-      - name: TRANSITIONS_ID
+      - name: TRANSITIONS_FEE_ID
         description: "{{ doc('pk') }}"
         tests:
           - unique

@@ -18,9 +18,11 @@ WITH base AS (
         fee_msg :transition AS transition
     FROM
         {{ ref('silver__transactions') }}
+    WHERE 
+        fee_msg IS NOT NULL
 
 {% if is_incremental() %}
-WHERE
+AND
     modified_timestamp >= DATEADD(
         MINUTE,
         -5,(
