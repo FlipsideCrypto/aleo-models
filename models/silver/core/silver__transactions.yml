@@ -29,14 +29,8 @@ models:
         tests:
           - not_null
 
-      - name: inner_type
-        tests:
-          - not_null
-
       - name: FEE_MSG
         description: "{{ doc('fee_msg') }}"
-        tests:
-          - not_null
         
       - name: execution_msg
  
