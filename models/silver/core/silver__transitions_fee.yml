@@ -35,6 +35,8 @@ models:
 
       - name: FUNCTION
         description: "{{ doc('transition_function') }}"
+        tests:
+          - not_null
 
       - name: INPUTS
         description: "{{ doc('transition_inputs') }}"
