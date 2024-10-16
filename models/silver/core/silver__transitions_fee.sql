@@ -22,7 +22,7 @@ WITH base AS (
         fee_msg IS NOT NULL
 
 {% if is_incremental() %}
-WHERE
+AND
     modified_timestamp >= DATEADD(
         MINUTE,
         -5,(

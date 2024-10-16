@@ -81,7 +81,7 @@ SELECT
     INDEX,
     transition :id :: STRING AS transition_id,
     succeeded,
-    TYPE
+    TYPE,
     transition :program :: STRING AS program_id,
     transition :function :: STRING AS FUNCTION,
     TRY_PARSE_JSON(
