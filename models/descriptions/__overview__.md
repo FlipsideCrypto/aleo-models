@@ -3,8 +3,7 @@
 # Welcome to the Flipside Crypto aleo Models Documentation
 
 ## **What does this documentation cover?**
-The documentation included here details the design of the aleo
- tables and views available via [Flipside Crypto.](https://flipsidecrypto.xyz/) For more information on how these models are built, please see [the github repository.](https://github.com/flipsideCrypto/aleo-models/)
+The documentation included here details the design of Aleo tables and views available via [Flipside Crypto.](https://flipsidecrypto.xyz/) For more information on how these models are built, please see [the github repository.](https://github.com/flipsideCrypto/aleo-models/)
 
 ## **How do I use these docs?**
 The easiest way to navigate this documentation is to use the Quick Links below. These links will take you to the documentation for each table, which contains a description, a list of the columns, and other helpful information.
@@ -20,21 +19,24 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Core Tables (`aleo`.`CORE`.`<table_name>`)
 
 **Dimension Tables:**
-
+- [core.dim_labels](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__dim_labels)
+- [core.dim_programs](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__dim_programs)
 
 **Fact Tables:**
-
-
+- [core.fact_block_round_batches](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_block_round_batches)
+- [core.fact_block_solutions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_block_solutions)
+- [core.fact_blocks](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_blocks)
+- [core.fact_transactions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transactions)
+- [core.fact_transitions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transitions)
 
 **Convenience Tables:**
-
+More to come.
 
 
 
 ## **Data Model Overview**
 
-The aleo
- models are built a few different ways, but the core fact tables are built using three layers of sql models: **bronze, silver, and gold (or core).**
+These Aleo models are built a few different ways, but the core fact tables are built using three layers of sql models: **bronze, silver, and gold (or core).**
 
 - Bronze: Data is loaded in from the source as a view
 - Silver: All necessary parsing, filtering, de-duping, and other transformations are done here
