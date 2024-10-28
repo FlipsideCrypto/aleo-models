@@ -4,36 +4,34 @@ models:
   - name: silver__programs
     description: "This model contains detailed information about programs deployed on the Aleo blockchain."
     columns:
-      - name: deployment_block_id
+      - name: DEPLOYMENT_BLOCK_ID
         description: "The ID of the block in which the program was deployed."
         tests:
           - not_null
-
-      - name: deployment_block_timestamp
+      - name: DEPLOYMENT_BLOCK_TIMESTAMP
         description: "The timestamp of the block in which the program was deployed."
         tests:
           - not_null
-
-      - name: program_id
+      - name: PROGRAM_ID
         description: "The unique identifier of the program."
         tests:
           - not_null
           - unique
-
-      - name: edition
+      - name: EDITION
         description: "The version or edition number of the program."
         tests:
           - not_null
-
-      - name: program
+      - name: PROGRAM
         description: "The full source code of the program."
         tests:
           - not_null
-
-      - name: verifying_keys
+      - name: VERIFYING_KEYS
         description: "The verifying keys associated with the program, if any."
-
-      - name: programs_id
+        tests:
+          - not_null:
+              where:
+                program_id != 'credits.aleo'
+      - name: PROGRAMS_ID
         description: "A unique identifier for each program record."
         tests:
           - not_null

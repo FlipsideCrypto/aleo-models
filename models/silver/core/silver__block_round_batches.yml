@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: silver__block_round_batches
+    description: Records of rounds and batches within blocks on the Aleo network, capturing the consensus and block production process from genesis onward.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_ID
+            - ROUND
+            - BATCH_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: ROUND
+        description: "{{ doc('round') }}"
+        tests:
+          - not_null
+      - name: BATCH_ID
+        description: "A unique identifier for each batch within a round"
+        tests:
+          - not_null
+      - name: AUTHOR
+        description: "The address of the validator who authored this batch"
+        tests:
+          - not_null
+      - name: COMMITTEE_ID
+        description: "The unique identifier for the committee responsible for this batch"
+        tests:
+          - not_null
+      - name: TRANSMISSION_IDS
+        description: "Array of transmission identifiers associated with this batch"
+        tests:
+          - not_null
+      - name: BLOCK_IDK_ID
+        description: "{{ doc('pk') }}"
+      - name: INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
+      - name: MODIFIED_TIMESTAMP
+        description: "{{ doc('modified_timestamp') }}"

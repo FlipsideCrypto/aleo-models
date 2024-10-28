@@ -1,48 +1,48 @@
 version: 2
 
 models:
-  - name: core__fact_transitions
+  - name: test_core__transitions_recent
     description: Fact table containing information about all transitions within transactions on the network.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TRANSITION_ID
+            - TX_ID
+            - BLOCK_ID
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
           - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: day
-              interval: 1
+              datepart: hour
+              interval: 3
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: INDEX
         description: "The index of the transition within the transaction."
-        tests:
-          - dbt_expectations.expect_column_to_exist
       - name: TRANSITION_ID
         description: "{{ doc('transition_id') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: PROGRAM_ID
         description: "{{ doc('program_id') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: FUNCTION
         description: "{{ doc('transition_function') }}"
-        tests:
-          - dbt_expectations.expect_column_to_exist
       - name: INPUTS
         description: "{{ doc('transition_inputs') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: OUTPUTS
         description: "{{ doc('transition_inputs') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: FACT_TRANSITIONS_ID
         description: '{{ doc("pk") }}'
       - name: INSERTED_TIMESTAMP
