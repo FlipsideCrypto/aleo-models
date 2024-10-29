@@ -6,14 +6,14 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - NETWORK_ID
-            - block_id
+            - BLOCK_ID
       - fsc_utils.sequence_gaps:
-          column_name: block_id
+          column_name: BLOCK_ID
           config:
             severity: error
             error_if: ">10"
     columns:
-      - name: block_id
+      - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
         tests:
           - not_null
@@ -42,21 +42,21 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT 
-      - name: block_hash
+      - name: BLOCK_HASH
         tests:
           - not_null
-      - name: previous_hash
+      - name: PREVIOUS_HASH
         tests:
           - not_null
       - name: ROUND
         tests:
           - not_null
-      - name: coinbase_target
+      - name: COINBASE_TARGET
         tests:
           - not_null
-      - name: cumulative_proof_target
+      - name: CUMULATIVE_PROOF_TARGET
         tests:
           - not_null
-      - name: cumulative_weight
+      - name: CUMULATIVE_WEIGHT
         tests:
           - not_null

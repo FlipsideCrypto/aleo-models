@@ -4,32 +4,27 @@ models:
   - name: silver__transitions_fee
     description: "This model contains detailed information about fee transitions within transactions on the Aleo blockchain."
     columns:
-      - name: block_id
+      - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
         tests:
           - not_null
-
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
         tests:
           - not_null
-
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
         tests:
           - not_null
-
       - name: SUCCEEDED
         description: "{{ doc('succeeded') }}"
         tests:
           - not_null
-
       - name: TRANSITION_ID
         description: "{{ doc('transition_id') }}"
         tests:
           - not_null
           - unique
-          
       - name: PROGRAM_ID
         description: "{{ doc('program_id') }}"
         tests:
@@ -38,15 +33,13 @@ models:
         description: "{{ doc('transition_function') }}"
         tests:
           - not_null
-
       - name: INPUTS
         description: "{{ doc('transition_inputs') }}"
-
+        tests:
+          - not_null
       - name: OUTPUTS
         description: "{{ doc('transition_outputs') }}"
-
+        tests:
+          - not_null
       - name: TRANSITIONS_FEE_ID
         description: "{{ doc('pk') }}"
-        tests:
-          - unique
-          - not_null

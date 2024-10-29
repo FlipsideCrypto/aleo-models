@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: silver__block_solutions
+    description: "Records of all prover solutions for each block, including block details, rewards, and solution-specific information."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_ID
+            - SOLUTION_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: BLOCK_PUZZLE_REWARD
+        description: "{{ doc('puzzle_reward') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: ADDRESS
+        description: "{{ doc('address') }}"
+        tests:
+          - not_null
+      - name: COUNTER
+        description: "A counter value associated with the solution"
+        tests:
+          - not_null
+      - name: EPOCH_HASH
+        description: "The hash of the epoch in which the solution was found"
+        tests:
+          - not_null
+      - name: SOLUTION_ID
+        description: "{{ doc('solution_id') }}"
+        tests:
+          - not_null
+          - unique
+      - name: TARGET
+        description: "The target difficulty for this specific solution"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - BIGINT
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: REWARD_RAW
+        description: "The sum of all solution targets for this block"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: REWARD
+        description: "The sum of all solution targets for this block"
+      - name: BLOCK_SOLUTIONS_ID
+        description: "{{ doc('pk') }}"
+      - name: INSERTED_TIMESTAMP
+        description: "{{ doc('inserted_timestamp') }}"
+      - name: MODIFIED_TIMESTAMP
+        description: "{{ doc('modified_timestamp') }}"

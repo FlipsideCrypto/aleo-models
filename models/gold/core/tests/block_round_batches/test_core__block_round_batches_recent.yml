@@ -1,40 +1,42 @@
 version: 2
 
 models:
-  - name: core__fact_block_round_batches
-    description: Records of rounds and batches within blocks on the Aleo network, capturing the consensus and block production process from genesis onward.
+  - name: test_core__block_round_batches_recent
+    description: Recency test suite for block_round_batches model
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_ID
+            - BATCH_ID
+            - AUTHOR
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
           - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: day
-              interval: 1
+              datepart: hour
+              interval: 3
       - name: ROUND
         description: "{{ doc('round') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: BATCH_ID
         description: "{{ doc('batch_id') }}"
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: AUTHOR
         description: "The author of the block round."
-        tests:
-          - dbt_expectations.expect_column_to_exist
       - name: COMMITTEE_ID
         description: "The committee ID of the block round."
         tests:
-          - dbt_expectations.expect_column_to_exist
+          - not_null
       - name: TRANSMISSION_IDS
         description: "The transmission IDs of the block round."
-        tests:
-          - dbt_expectations.expect_column_to_exist
       - name: FACT_BLOCK_ROUND_BATCHES_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

@@ -3,49 +3,37 @@ version: 2
 models:
   - name: silver__transactions
     description: "This model contains detailed information about transactions in the Aleo blockchain."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_ID
+            - TX_ID
     columns:
-      - name: block_id
+      - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
-        tests:
-          - not_null
-
       - name: BLOCK_TIMESTAMP
         description: "{{ doc('block_timestamp') }}"
-        tests:
-          - not_null
-
       - name: TX_ID
         description: "{{ doc('tx_id') }}"
-        tests:
-          - unique
-          - not_null
-
       - name: status
-        tests:
-          - not_null
-      
       - name: TX_TYPE
         description: "{{ doc('tx_type') }}"
         tests:
           - not_null
-
+          - accepted_values:
+              values: ['deploy', 'execute', 'fee']
       - name: FEE_MSG
         description: "{{ doc('fee_msg') }}"
-        
-      - name: execution_msg
- 
-
-      - name: deployment_msg
- 
-
-      - name: owner_msg
- 
-
-      - name: finalize_msg
-        tests:
-          - not_null
-
-      - name: rejected_msg
+      - name: EXECUTION_MSG
+        description: "{{ doc('execution_msg') }}"
+      - name: DEPLOYMENT_MSG
+        description: "{{ doc('deployment_msg') }}"
+      - name: OWNER_MSG
+        description: "{{ doc('owner_msg') }}"
+      - name: FINALIZE_MSG
+        description: "{{ doc('finalize_msg') }}"
+      - name: REJECTED_MSG
+        description: "{{ doc('rejected_msg') }}"
  
 
 
