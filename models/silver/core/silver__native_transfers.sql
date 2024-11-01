@@ -31,6 +31,17 @@ WITH base AS (
             'transfer_private_to_public',
             'transfer_public_to_private'
         )
+    {% if is_incremental() %}
+    AND modified_timestamp >= DATEADD(
+        MINUTE,
+        -5,(
+            SELECT
+                MAX(modified_timestamp)
+            FROM
+                {{ this }}
+            )
+        )
+    {% endif %}
 ),
 output_args AS (
     SELECT
@@ -118,7 +129,10 @@ select
     function as transfer_type,
     transfer_from as sender,
     transfer_to as receiver,
-    REPLACE(amount, 'u64', '') :: INT as amount,
+    REPLACE(amount, 'u64', '') :: BIGINT / pow(
+            10,
+            6
+        ) AS amount,
     'aleo_credits' as currency,
     inserted_timestamp,
     modified_timestamp,
