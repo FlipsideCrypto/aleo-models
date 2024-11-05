@@ -1,0 +1,70 @@
+version: 2
+models:
+  - name: test_core__transfers_recent
+    description: Records of all address to address transfers on Aleo.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TRANSITION_ID
+            - TX_ID
+            - BLOCK_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp_ntz
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: hour
+              interval: 3
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - not_null
+      - name: TRANSITION_ID
+        description: "{{ doc('transition_id') }}"
+        tests:
+          - not_null
+      - name: INDEX
+        tests:
+          - not_null
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests:
+          - not_null
+      - name: TRANSFER_TYPE
+        description: "{{ doc('transfer_type') }}"
+        tests: 
+          - not_null
+      - name: SENDER
+        description: "Address that tokens are transferred from."
+        tests: 
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: RECEIVER
+        description: "Address that tokens are transferred to."
+        tests: 
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: AMOUNT
+        description: "Number of tokens transferred."
+        tests: 
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: NUMBER
+      - name: CURRENCY
+        description: "Currency of the transfer."
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: FACT_TRANSFERS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'          

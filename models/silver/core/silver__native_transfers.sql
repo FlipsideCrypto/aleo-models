@@ -4,8 +4,8 @@
     unique_key = ['transition_id'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['core', 'recent_test']
+    cluster_by = ['modified_timestamp::DATE'],
+    tags = ['noncore', 'full_test']
 ) }}
 
 WITH base AS (
@@ -14,12 +14,11 @@ WITH base AS (
         block_timestamp,
         tx_id,
         transition_id,
+        index,
         outputs,
+        program_id,
         function,
-        succeeded,
-        inserted_timestamp,
-        modified_timestamp,
-        invocation_id
+        succeeded
     FROM
         {{ ref('silver__transitions') }}
     WHERE
@@ -49,6 +48,8 @@ output_args AS (
         block_timestamp,
         tx_id,
         transition_id,
+        index,
+        program_id,
         function,
         succeeded,
         REGEXP_SUBSTR(
@@ -57,10 +58,7 @@ output_args AS (
             1,
             1,
             'sie'
-        ) as args_string,
-        inserted_timestamp,
-        modified_timestamp,
-        invocation_id
+        ) as args_string
     FROM
         base
 ),
@@ -70,6 +68,8 @@ output_args_cleaned AS (
         block_timestamp,
         tx_id,
         transition_id,
+        index,
+        program_id
         function,
         succeeded,
         SPLIT(
@@ -83,10 +83,7 @@ output_args_cleaned AS (
                 ''
             ),
             ','
-        ) as args_array,
-        inserted_timestamp,
-        modified_timestamp,
-        invocation_id
+        ) as args_array
     FROM output_args
 ),
 mapped_transfers AS (
@@ -95,6 +92,8 @@ mapped_transfers AS (
         block_timestamp,
         tx_id,
         transition_id,
+        index,
+        program_id,
         succeeded,
         function,
         CASE
@@ -114,10 +113,7 @@ mapped_transfers AS (
             WHEN function = 'transfer_private_to_public' THEN args_array[1]
             WHEN function = 'transfer_public_to_private' THEN args_array[1]
             WHEN function = 'transfer_private' THEN null
-        END :: STRING as amount,
-        inserted_timestamp,
-        modified_timestamp,
-        invocation_id
+        END :: STRING as amount
     FROM output_args_cleaned
 )
 select
@@ -125,6 +121,8 @@ select
     block_timestamp,
     tx_id,
     transition_id,
+    index,
+    program_id,
     succeeded as tx_succeeded,
     function as transfer_type,
     transfer_from as sender,
@@ -133,9 +131,8 @@ select
             10,
             6
         ) AS amount,
-    'aleo_credits' as currency,
-    inserted_timestamp,
-    modified_timestamp,
-    invocation_id
+    SYSDATE() as inserted_timestamp,
+    SYSDATE() as modified_timestamp,
+    '{{ invocation_id }}' as _invocation_id
 from 
     mapped_transfers
