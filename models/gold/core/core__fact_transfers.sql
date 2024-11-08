@@ -15,12 +15,13 @@ SELECT
     tx_id,
     tx_succeeded,
     transition_id,
+    index,
     transfer_type,
     sender,
     receiver,
     amount,
-    NULL AS token_address,
-    TRUE AS is_native,
+    is_native,
+    token_address,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id','transfer_type']
     ) }} AS fact_transfers_id,

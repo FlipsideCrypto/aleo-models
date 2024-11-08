@@ -122,7 +122,6 @@ select
     tx_id,
     transition_id,
     index,
-    program_id as token_address,
     succeeded as tx_succeeded,
     function as transfer_type,
     transfer_from as sender,
@@ -131,6 +130,8 @@ select
             10,
             6
         ) AS amount,
+    TRUE AS is_native,
+    NULL AS token_address,
     SYSDATE() as inserted_timestamp,
     SYSDATE() as modified_timestamp,
     '{{ invocation_id }}' as _invocation_id

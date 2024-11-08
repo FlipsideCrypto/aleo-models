@@ -49,14 +49,6 @@ models:
           - not_null
           - dbt_expectations.expect_column_values_to_be_of_type:
               column_type: NUMBER
-      - name: PROGRAM_ID
-        description: "{{ doc('program_id') }}"
-        tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - STRING
-                - VARCHAR
       - name: TX_SUCCEEDED
         tests:
           - not_null

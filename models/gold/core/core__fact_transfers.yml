@@ -38,8 +38,12 @@ models:
         description: "Number of tokens transferred."
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: CURRENCY
-        description: "Currency of the transfer."
+      - name: IS_NATIVE
+        description: "Whether the transfer is a native transfer."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TOKEN_ADDRESS 
+        description: "Token address of the transfer."
         tests: 
           - dbt_expectations.expect_column_to_exist
       - name: FACT_TRANSFERS_ID
