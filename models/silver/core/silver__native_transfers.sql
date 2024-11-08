@@ -69,7 +69,7 @@ output_args_cleaned AS (
         tx_id,
         transition_id,
         index,
-        program_id
+        program_id,
         function,
         succeeded,
         SPLIT(
@@ -122,7 +122,7 @@ select
     tx_id,
     transition_id,
     index,
-    program_id,
+    program_id as token_address,
     succeeded as tx_succeeded,
     function as transfer_type,
     transfer_from as sender,

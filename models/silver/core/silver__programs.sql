@@ -11,14 +11,7 @@ WITH base AS (
     SELECT
         block_id,
         block_timestamp,
-        REGEXP_SUBSTR(
-            deployment_msg :program :: STRING,
-            'program\\s+(\\S+);',
-            1,
-            1,
-            'e',
-            1
-        ) AS program_id,
+        program_id,
         deployment_msg
     FROM
         {{ ref('silver__transactions') }}

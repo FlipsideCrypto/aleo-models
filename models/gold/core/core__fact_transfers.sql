@@ -19,7 +19,8 @@ SELECT
     sender,
     receiver,
     amount,
-    currency,
+    NULL AS token_address,
+    TRUE AS is_native,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id','transfer_type']
     ) }} AS fact_transfers_id,

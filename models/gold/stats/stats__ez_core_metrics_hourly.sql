@@ -17,7 +17,6 @@ SELECT
     transaction_count_success,
     transaction_count_failed,
     unique_from_count,
-    unique_to_count,
     total_fees AS total_fees_native,
     core_metrics_hourly_id AS ez_core_metrics_hourly_id,
     inserted_timestamp,

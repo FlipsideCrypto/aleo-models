@@ -71,14 +71,6 @@ models:
               column_type_list:
                 - NUMBER
                 - FLOAT
-      - name: UNIQUE_TO_COUNT
-        description: "Number of unique receivers in an hour."
-        tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
       - name: TOTAL_FEES_NATIVE
         description: "Total fees in native currency for an hour."
         tests:

@@ -67,6 +67,14 @@ SELECT
     fee_msg,
     execution_msg,
     deployment_msg,
+    REGEXP_SUBSTR(
+        deployment_msg :program :: STRING,
+        'program\\s+(\\S+);',
+        1,
+        1,
+        'e',
+        1
+    ) AS program_id,
     owner_msg,
     finalize_msg,
     rejected_msg,

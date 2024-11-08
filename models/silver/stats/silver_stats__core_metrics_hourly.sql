@@ -45,11 +45,8 @@ SELECT
         END
     ) AS transaction_count_failed,
     COUNT(
-        DISTINCT tf.sender
+        DISTINCT f.fee_payer
     ) AS unique_from_count,
-    COUNT(
-        DISTINCT tf.receiver
-    ) AS unique_to_count,
     SUM(f.fee) AS total_fees,
     MAX(ts.inserted_timestamp) AS _inserted_timestamp,  
     {{ dbt_utils.generate_surrogate_key(

@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: test_core__transfers_recent
+  - name: test_core__transfers_full
     description: Records of all address to address transfers on Aleo.
     tests:
       - dbt_utils.unique_combination_of_columns:

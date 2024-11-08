@@ -68,6 +68,18 @@ fee_sum AS (
         AND VALUE :value LIKE '%u64'
     GROUP BY
         transition_id
+),
+fee_payer AS (
+    SELECT
+        transition_id,
+        REGEXP_SUBSTR( 
+            outputs[array_size(outputs)-1] :value :: STRING, 
+            'arguments:\\s*\\[(.*?)\\]', 1, 1, 'sie' ) as args_string, 
+        SPLIT(
+            REGEXP_REPLACE( REGEXP_REPLACE( REGEXP_REPLACE(args_string, '\\s+', ''), '\\[|\\]', '' ), 'u64$', '' ), ',' ) aa, 
+        aa[0]::STRING as fee_payer
+    FROM
+        parsed
 )
 SELECT
     block_id,
@@ -81,6 +93,7 @@ SELECT
     outputs,
     fee_raw,
     fee,
+    fee_payer,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id']
     ) }} AS transitions_fee_id,
@@ -90,3 +103,4 @@ SELECT
 FROM
     parsed
     LEFT JOIN fee_sum USING (transition_id)
+    LEFT JOIN fee_payer USING (transition_id)
