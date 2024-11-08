@@ -45,9 +45,9 @@ SELECT
         END
     ) AS transaction_count_failed,
     COUNT(
-        DISTINCT f.fee_payer
+        DISTINCT ts.fee_payer
     ) AS unique_from_count,
-    SUM(f.fee) AS total_fees,
+    SUM(ts.fee) AS total_fees,
     MAX(ts.inserted_timestamp) AS _inserted_timestamp,  
     {{ dbt_utils.generate_surrogate_key(
         ['block_timestamp_hour']
@@ -57,12 +57,9 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 
 FROM
-    {{ ref('silver__transitions') }} ts
+    {{ ref('silver__transitions_fee') }} ts
 JOIN
     {{ref ('silver__native_transfers')}} tf
-    USING(tx_id)
-JOIN
-    {{ ref('silver__transitions_fee') }} f
     USING(tx_id)
 WHERE
     DATE_TRUNC('hour', ts.block_timestamp) < DATE_TRUNC(
