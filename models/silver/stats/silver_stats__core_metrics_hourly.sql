@@ -55,12 +55,8 @@ SELECT
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
-
 FROM
     {{ ref('silver__transitions_fee') }} ts
-JOIN
-    {{ref ('silver__native_transfers')}} tf
-    USING(tx_id)
 WHERE
     DATE_TRUNC('hour', ts.block_timestamp) < DATE_TRUNC(
         'hour',

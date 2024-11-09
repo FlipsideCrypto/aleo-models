@@ -23,3 +23,13 @@ SELECT
     modified_timestamp
 FROM
     {{ ref('silver_stats__core_metrics_hourly') }}
+
+{% if is_incremental() %}
+WHERE
+    block_timestamp_hour >= (
+        SELECT
+            MAX(block_timestamp_hour)
+        FROM
+            {{ this }}
+    ) - INTERVAL '1 hour'
+{% endif %}

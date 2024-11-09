@@ -79,6 +79,7 @@ SELECT
         fee,
         0
     ) AS fee,
+    b.fee_payer,
     {{ dbt_utils.generate_surrogate_key(['a.tx_id']) }} AS fact_transactions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
