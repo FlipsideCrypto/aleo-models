@@ -1,0 +1,9 @@
+version: 2
+models:
+  - name: silver_stats__core_metrics_block_hourly
+    columns:
+      - name: BLOCK_TIMESTAMP_HOUR
+      - name: BLOCK_ID_MIN
+      - name: BLOCK_ID_MAX
+      - name: BLOCK_COUNT
+      - name: INSERTED_TIMESTAMP
