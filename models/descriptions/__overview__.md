@@ -28,6 +28,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [core.fact_blocks](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_blocks)
 - [core.fact_transactions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transactions)
 - [core.fact_transitions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transitions)
+- [core.fact_transfers](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transfers)
 
 **Convenience Tables:**
 More to come.

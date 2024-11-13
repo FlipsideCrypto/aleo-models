@@ -55,6 +55,18 @@ models:
         description: "{{ doc('tx_transition_count') }}"
         tests:
           - dbt_expectations.expect_column_to_exist
+      - name: FEE_RAW
+        description: "{{ doc('fee_raw') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: FEE
+        description: "{{ doc('fee') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: FEE_PAYER
+        description: "{{ doc('fee_payer') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
       - name: FACT_TRANSACTIONS_ID
         description: '{{ doc("pk") }}'
       - name: INSERTED_TIMESTAMP

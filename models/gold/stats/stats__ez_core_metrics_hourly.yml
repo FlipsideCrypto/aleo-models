@@ -1,0 +1,94 @@
+version: 2
+models:
+  - name: stats__ez_core_metrics_hourly
+    description: 'Hourly core metrics for the Aleo blockchain.'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_TIMESTAMP_HOUR
+    columns:
+      - name: BLOCK_TIMESTAMP_HOUR
+        description: "Truncated timestamp of a block."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - TIMESTAMP_LTZ
+                - TIMESTAMP_NTZ
+      - name: BLOCK_ID_MIN
+        description: "Minimum block ID in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: BLOCK_ID_MAX
+        description: "Maximum block ID in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: BLOCK_COUNT
+        description: "Number of blocks in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: TRANSACTION_COUNT
+        description: "Number of transactions in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: TRANSACTION_COUNT_SUCCESS
+        description: "Number of successful transactions in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: TRANSACTION_COUNT_FAILED
+        description: "Number of failed transactions in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: UNIQUE_FROM_COUNT
+        description: "Number of unique senders in an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: TOTAL_FEES_NATIVE
+        description: "Total fees in native currency for an hour."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - DECIMAL
+                - FLOAT
+                - NUMBER
+      - name: TOTAL_FEES_USD
+        description: "Total fees in USD for an hour."
+      - name: EZ_CORE_METRICS_HOURLY_ID
+        description: '{{ doc("pk") }}'  
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 

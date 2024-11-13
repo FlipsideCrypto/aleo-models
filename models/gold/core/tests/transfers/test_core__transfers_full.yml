@@ -1,0 +1,90 @@
+version: 2
+models:
+  - name: test_core__transfers_full
+    description: Records of all address to address transfers on Aleo.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TRANSITION_ID
+            - TX_ID
+            - BLOCK_ID
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: NUMBER
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp_ntz
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: BOOLEAN
+      - name: TRANSITION_ID
+        description: "{{ doc('transition_id') }}"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: TRANSFER_TYPE
+        description: "{{ doc('transfer_type') }}"
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: SENDER
+        description: "Address that tokens are transferred from."
+        tests: 
+          - not_null:
+              where: transfer_type IN ('transfer_public', 'transfer_public_as_signer', 'transfer_public_to_private')
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: RECEIVER
+        description: "Address that tokens are transferred to."
+        tests: 
+          - not_null:
+              where: transfer_type IN ('transfer_public', 'transfer_public_as_signer', 'transfer_private_to_public')
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: AMOUNT
+        description: "Number of tokens transferred."
+        tests: 
+          - not_null:
+              where: transfer_type != 'transfer_private'
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: FLOAT
+      - name: IS_NATIVE
+        description: "Whether the transfer is a native transfer."
+        tests: 
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: BOOLEAN
+      - name: TOKEN_ADDRESS
+        description: "Token address of the transfer."
+        tests: 
+          - not_null:
+              where: is_native = FALSE
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: VARCHAR
+      - name: FACT_TRANSFERS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'          

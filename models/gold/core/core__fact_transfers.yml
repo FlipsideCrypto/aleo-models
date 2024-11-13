@@ -1,0 +1,54 @@
+version: 2
+models:
+  - name: core__fact_transfers
+    description: Records of all wallet to wallet transfers on Aleo.
+    columns:
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TX_SUCCEEDED
+        description: "{{ doc('tx_succeeded') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TRANSFER_TYPE
+        description: "{{ doc('transfer_type') }}"
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: SENDER
+        description: "Address that tokens are transferred from."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: RECEIVER
+        description: "Address that tokens are transferred to."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: AMOUNT
+        description: "Number of tokens transferred."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: IS_NATIVE
+        description: "Whether the transfer is a native transfer."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: TOKEN_ADDRESS 
+        description: "Token address of the transfer."
+        tests: 
+          - dbt_expectations.expect_column_to_exist
+      - name: FACT_TRANSFERS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'          

@@ -5,7 +5,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
     cluster_by = ['block_timestamp::DATE'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,fee_msg,execution_msg,deployment_msg,owner_msg,finalize_msg,rejected_msg);",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,fee_msg,execution_msg,deployment_msg,owner_msg,finalize_msg,rejected_msg,fee_payer);",
     tags = ['core', 'full_test']
 ) }}
 
@@ -79,6 +79,7 @@ SELECT
         fee,
         0
     ) AS fee,
+    b.fee_payer,
     {{ dbt_utils.generate_surrogate_key(['a.tx_id']) }} AS fact_transactions_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,

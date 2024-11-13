@@ -3,6 +3,12 @@ version: 2
 models:
   - name: silver__transitions_fee
     description: "This model contains detailed information about fee transitions within transactions on the Aleo blockchain."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_ID
+            - TX_ID
+            - TRANSITION_ID
     columns:
       - name: BLOCK_ID
         description: "{{ doc('block_id') }}"
