@@ -57,12 +57,16 @@ WITH txs AS (
 
     {% if is_incremental() %}
     WHERE
-        block_timestamp_hour >= (
-            SELECT
-                MAX(block_timestamp_hour)
-            FROM
-                {{ this }}
-        ) - INTERVAL '1 hour'
+        block_timestamp_hour >= LEAST(
+            COALESCE(
+                '{{ min_block_timestamp_hour_blocks }}',
+                '2000-01-01'
+            ),
+            COALESCE(
+                '{{ min_block_timestamp_hour_txns }}',
+                '2000-01-01'
+            )
+        )
     {% endif %}
 ),
 blocks AS (
