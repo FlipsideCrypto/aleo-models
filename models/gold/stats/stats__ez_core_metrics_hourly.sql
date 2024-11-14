@@ -43,7 +43,7 @@ WHERE
     ) {% endset %}
     {% set min_block_timestamp_hour_txns = run_query(query2).columns [0].values() [0] %}
     {% if not min_block_timestamp_hour_txns or min_block_timestamp_hour_txns == 'None' %}
-        {% set min_block_timestamp_hour_txns = '2022-09-04 00:00:00' %}
+        {% set min_block_timestamp_hour_txns = '2024-09-04 00:00:00' %}
     {% endif %}
 {% endif %}
 {% endif %}
@@ -72,11 +72,11 @@ WITH txs AS (
         block_timestamp_hour >= LEAST(
             COALESCE(
                 '{{ min_block_timestamp_hour_blocks }}',
-                '2000-01-01 00:00:00'
+                '2024-09-04 00:00:00'
             ),
             COALESCE(
                 '{{ min_block_timestamp_hour_txns }}',
-                '2000-01-01 00:00:00'
+                '2024-09-04 00:00:00'
             )
         )
     {% endif %}
@@ -97,11 +97,11 @@ blocks AS (
         block_timestamp_hour >= LEAST(
             COALESCE(
                 '{{ min_block_timestamp_hour_blocks }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             ),
             COALESCE(
                 '{{ min_block_timestamp_hour_txns }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             )
         )
     {% endif %}
