@@ -12,6 +12,13 @@ sources:
     schema: silver
     tables:
       - name: number_sequence
+      - name: labels_combined
+      - name: complete_token_asset_metadata
+      - name: complete_token_prices
+      - name: complete_provider_asset_metadata
+      - name: complete_provider_prices
+      - name: complete_native_asset_metadata
+      - name: complete_native_prices
 
   - name: bronze_streamline
     database: streamline

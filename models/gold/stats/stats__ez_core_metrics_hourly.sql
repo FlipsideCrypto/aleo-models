@@ -49,12 +49,18 @@ WITH txs AS (
         transaction_count_failed,
         unique_from_count,
         total_fees AS total_fees_native,
+        price AS imputed_close,
         core_metrics_hourly_id AS ez_core_metrics_hourly_id,
-        inserted_timestamp,
-        modified_timestamp
+        s.inserted_timestamp,
+        s.modified_timestamp
     FROM
         {{ ref('silver_stats__core_metrics_hourly') }}
-
+        s
+        LEFT JOIN {{ ref('price__ez_prices_hourly') }}
+        p
+        ON s.block_timestamp_hour = p.hour
+        AND p.symbol = 'ALEO'
+        AND p.token_address IS NULL
     {% if is_incremental() %}
     WHERE
         block_timestamp_hour >= LEAST(
@@ -104,6 +110,10 @@ SELECT
     b.transaction_count_failed,
     b.unique_from_count,
     b.total_fees_native,
+    ROUND(
+        b.total_fees_native * b.imputed_close,
+        2
+    ) AS total_fees_usd,
     A.core_metrics_block_hourly_id AS ez_core_metrics_hourly_id,
     GREATEST(
         A.inserted_timestamp,
