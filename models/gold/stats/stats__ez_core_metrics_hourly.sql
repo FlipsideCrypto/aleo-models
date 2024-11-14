@@ -26,6 +26,9 @@ WHERE
             {{ this }}
     ) {% endset %}
     {% set min_block_timestamp_hour_blocks = run_query(query).columns [0].values() [0] %}
+    {% if not min_block_timestamp_hour_blocks or min_block_timestamp_hour_blocks == 'None' %}
+        {% set min_block_timestamp_hour_blocks = '2022-09-04 00:00:00' %}
+    {% endif %}
     {% set query2 %}
 SELECT
     MIN(DATE_TRUNC('hour', block_timestamp)) block_timestamp_hour
@@ -39,6 +42,9 @@ WHERE
             {{ this }}
     ) {% endset %}
     {% set min_block_timestamp_hour_txns = run_query(query2).columns [0].values() [0] %}
+    {% if not min_block_timestamp_hour_txns or min_block_timestamp_hour_txns == 'None' %}
+        {% set min_block_timestamp_hour_txns = '2024-09-04 00:00:00' %}
+    {% endif %}
 {% endif %}
 {% endif %}
 WITH txs AS (
@@ -49,22 +55,28 @@ WITH txs AS (
         transaction_count_failed,
         unique_from_count,
         total_fees AS total_fees_native,
+        price AS imputed_close,
         core_metrics_hourly_id AS ez_core_metrics_hourly_id,
-        inserted_timestamp,
-        modified_timestamp
+        s.inserted_timestamp,
+        s.modified_timestamp
     FROM
         {{ ref('silver_stats__core_metrics_hourly') }}
-
+        s
+        LEFT JOIN {{ ref('price__ez_prices_hourly') }}
+        p
+        ON s.block_timestamp_hour = p.hour
+        AND p.symbol = 'ALEO'
+        AND p.token_address IS NULL
     {% if is_incremental() %}
     WHERE
         block_timestamp_hour >= LEAST(
             COALESCE(
                 '{{ min_block_timestamp_hour_blocks }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             ),
             COALESCE(
                 '{{ min_block_timestamp_hour_txns }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             )
         )
     {% endif %}
@@ -85,11 +97,11 @@ blocks AS (
         block_timestamp_hour >= LEAST(
             COALESCE(
                 '{{ min_block_timestamp_hour_blocks }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             ),
             COALESCE(
                 '{{ min_block_timestamp_hour_txns }}',
-                '2000-01-01'
+                '2024-09-04 00:00:00'
             )
         )
     {% endif %}
@@ -104,6 +116,10 @@ SELECT
     b.transaction_count_failed,
     b.unique_from_count,
     b.total_fees_native,
+    ROUND(
+        b.total_fees_native * b.imputed_close,
+        2
+    ) AS total_fees_usd,
     A.core_metrics_block_hourly_id AS ez_core_metrics_hourly_id,
     GREATEST(
         A.inserted_timestamp,
