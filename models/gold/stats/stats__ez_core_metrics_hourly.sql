@@ -26,6 +26,9 @@ WHERE
             {{ this }}
     ) {% endset %}
     {% set min_block_timestamp_hour_blocks = run_query(query).columns [0].values() [0] %}
+    {% if not min_block_timestamp_hour_blocks or min_block_timestamp_hour_blocks == 'None' %}
+        {% set min_block_timestamp_hour_blocks = '2022-09-04 00:00:00' %}
+    {% endif %}
     {% set query2 %}
 SELECT
     MIN(DATE_TRUNC('hour', block_timestamp)) block_timestamp_hour
@@ -39,6 +42,9 @@ WHERE
             {{ this }}
     ) {% endset %}
     {% set min_block_timestamp_hour_txns = run_query(query2).columns [0].values() [0] %}
+    {% if not min_block_timestamp_hour_txns or min_block_timestamp_hour_txns == 'None' %}
+        {% set min_block_timestamp_hour_txns = '2022-09-04 00:00:00' %}
+    {% endif %}
 {% endif %}
 {% endif %}
 WITH txs AS (
@@ -66,11 +72,11 @@ WITH txs AS (
         block_timestamp_hour >= LEAST(
             COALESCE(
                 '{{ min_block_timestamp_hour_blocks }}',
-                '2000-01-01'
+                '2000-01-01 00:00:00'
             ),
             COALESCE(
                 '{{ min_block_timestamp_hour_txns }}',
-                '2000-01-01'
+                '2000-01-01 00:00:00'
             )
         )
     {% endif %}
