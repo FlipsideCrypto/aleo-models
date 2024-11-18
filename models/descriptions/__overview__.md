@@ -30,10 +30,21 @@ There is more information on how to use dbt docs in the last section of this doc
 - [core.fact_transitions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transitions)
 - [core.fact_transfers](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transfers)
 
+### Price Tables (`aleo`.`PRICE`.`<table_name>`)
+
+**Dimension Tables:**
+- [price.dim_asset_metadata](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.price__dim_asset_metadata)
+
+**Fact Tables:**
+- [price.fact_prices_ohlc_hourly](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.price__fact_prices_ohlc_hourly)
+
 **Convenience Tables:**
-More to come.
+- [price.ez_asset_metadata](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.price__ez_asset_metadata)
+- [price.ez_prices_hourly](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.price__ez_prices_hourly)
 
+### Stats Tables (`aleo`.`STATS`.`<table_name>`)
 
+- [stats.ez_core_metrics_hourly](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.stats__ez_core_metrics_hourly)
 
 ## **Data Model Overview**
 
