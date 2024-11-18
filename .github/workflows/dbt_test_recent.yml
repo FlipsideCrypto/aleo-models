@@ -19,6 +19,7 @@ env:
   DATABASE: "${{ vars.DATABASE }}"
   WAREHOUSE: "${{ vars.WAREHOUSE }}"
   SCHEMA: "${{ vars.SCHEMA }}"
+  SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -45,3 +46,9 @@ jobs:
         run: |
           dbt run -m "aleo_models,tag:recent_test"
           dbt test -m "aleo_models,tag:recent_test"
+          
+        continue-on-error: true
+
+      - name: Log test results
+        run: |
+          python python/dbt_test_alert.py
