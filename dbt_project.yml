@@ -38,6 +38,8 @@ models:
     relation: true
     columns: true
   +on_schema_change: "append_new_columns"
+  aleo_models:
+    +pre-hook: '{{ fsc_utils.set_query_tag() }}'  # Changed from query_tag to pre-hook
   livequery_models:
     deploy:
       core:
@@ -74,6 +76,11 @@ vars:
   UPDATE_SNOWFLAKE_TAGS: True
   UPDATE_UDFS_AND_SPS: FALSE 
   BRONZE_LOOKBACK_DAYS: '{{ env_var("BRONZE_LOOKBACK_DAYS", 3) }}'
+  core_folders: [
+    'silver/core',
+    'gold/core',
+    'streamline'
+  ]
 
 #### STREAMLINE 2.0 BEGIN ####
 
