@@ -24,39 +24,14 @@ models:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SUCCEEDED
-        description: "Indicates whether the swap transaction was successful"
+      - name: POOL_ID
+        description: "The identifier of the pool used for the swap"
         tests:
           - dbt_expectations.expect_column_to_exist
-          - accepted_values:
-              values: [true, false]
-          - not_null
+          - not_null:
+              where: not is_private
 
-      - name: PROGRAM_ID
-        description: "The identifier of the program executing the swap"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-
-      - name: FUNCTION
-        description: "The type of swap function called"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-
-      - name: INDEX
-        description: "The index of the swap within the transaction"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-
-      - name: TOKEN_ID
-        description: "The identifier of the token being swapped"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-
-      - name: INITIATOR_ADDRESS
+      - name: SWAPPER
         description: "The address that initiated the swap"
         tests:
           - dbt_expectations.expect_column_to_exist
@@ -70,6 +45,13 @@ models:
           - not_null:
               where: not is_private
 
+      - name: INPUT_TOKEN_ID
+        description: "The identifier of the token being input into the swap"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null:
+              where: not is_private
+
       - name: OUTPUT_AMOUNT
         description: "The amount of tokens received from the swap"
         tests:
@@ -77,12 +59,36 @@ models:
           - not_null:
               where: not is_private
 
-      - name: POOL_ID
-        description: "The identifier of the pool used for the swap"
+      - name: OUTPUT_TOKEN_ID
+        description: "The identifier of the token received from the swap"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null:
               where: not is_private
+
+      - name: INVOLVED_PROGRAMS
+        description: "Array of programs involved in the swap"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: INVOLVED_FUNCTIONS
+        description: "Array of functions involved in the swap"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FIRST_INDEX
+        description: "The first index of the swap within the transaction"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: LAST_INDEX
+        description: "The last index of the swap within the transaction"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
 
       - name: IS_PRIVATE
         description: "Boolean indicating if the swap was a private transaction"

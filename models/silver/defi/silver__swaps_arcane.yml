@@ -20,25 +20,10 @@ models:
         tests:
           - not_null
 
-      - name: succeeded
+      - name: pool_id
         tests:
-          - not_null
-
-      - name: program_id
-        tests:
-          - not_null
-
-      - name: function
-        tests:
-          - not_null
-
-      - name: index
-        tests:
-          - not_null
-
-      - name: token_id
-        tests:
-          - not_null
+          - not_null:
+              where: not is_private
 
       - name: initiator_address
         tests:
@@ -50,15 +35,36 @@ models:
           - not_null:
               where: not is_private
 
+      - name: input_token_id
+        tests:
+          - not_null:
+              where: not is_private
+
       - name: output_amount
         tests:
           - not_null:
               where: not is_private
 
-      - name: pool_id
+      - name: output_token_id
         tests:
           - not_null:
               where: not is_private
+
+      - name: involved_programs
+        tests:
+          - not_null
+
+      - name: involved_functions
+        tests:
+          - not_null
+
+      - name: first_index
+        tests:
+          - not_null
+
+      - name: last_index
+        tests:
+          - not_null
 
       - name: is_private
         tests:

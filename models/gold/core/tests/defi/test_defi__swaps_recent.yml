@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: test_defi__swaps_recent
+    description: Fact table containing information about all swap transactions on the network.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - SWAPPER
+            - BLOCK_ID
+    columns:
+      - name: BLOCK_ID
+        tests:
+          - not_null
+
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: hour
+              interval: 3
+
+      - name: TX_ID
+        tests:
+          - not_null
+
+      - name: POOL_ID
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: SWAPPER
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: INPUT_AMOUNT
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: INPUT_TOKEN_ID
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: OUTPUT_AMOUNT
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: OUTPUT_TOKEN_ID
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: INVOLVED_PROGRAMS
+        tests:
+          - not_null
+
+      - name: INVOLVED_FUNCTIONS
+        tests:
+          - not_null
+
+      - name: FIRST_INDEX
+        tests:
+          - not_null
+
+      - name: LAST_INDEX
+        tests:
+          - not_null
+
+      - name: IS_PRIVATE
+        tests:
+          - not_null
