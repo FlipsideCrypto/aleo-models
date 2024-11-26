@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: silver__swaps_arcane    
+    columns:
+      - name: swaps_arcane_id
+        tests:
+          - unique
+          - not_null
+
+      - name: block_timestamp
+        tests:
+          - not_null
+
+      - name: block_id
+        tests:
+          - not_null
+
+      - name: tx_id
+        tests:
+          - not_null
+
+      - name: succeeded
+        tests:
+          - not_null
+
+      - name: program_id
+        tests:
+          - not_null
+
+      - name: function
+        tests:
+          - not_null
+
+      - name: index
+        tests:
+          - not_null
+
+      - name: token_id
+        tests:
+          - not_null
+
+      - name: initiator_address
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: input_amount
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: output_amount
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: pool_id
+        tests:
+          - not_null:
+              where: not is_private
+
+      - name: is_private
+        tests:
+          - not_null
