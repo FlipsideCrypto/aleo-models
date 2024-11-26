@@ -52,21 +52,18 @@ logic AS (
         function,
         index,
         CASE 
-            -- Credits/PUC In Helpers
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo', 
                 'arcn_credits_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' THEN json_inputs[0]:value::string
-            -- Credits/PUC Out Helpers
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
                 'arcn_puc_out_helper_v2_2_2.aleo',
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' THEN json_inputs[0]:value::string
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -75,23 +72,19 @@ logic AS (
                 'arcn_priv_v2_2_3.aleo'
             ) AND function = 'swap_amm' THEN json_inputs[0]:value::string
         END AS pool_id,
-        -- Initiator Address (recipient)
         CASE 
-            -- Credits/PUC In Helpers
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo', 
                 'arcn_credits_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' THEN json_inputs[1]:value::string
-            -- Credits/PUC Out Helpers
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
                 'arcn_puc_out_helper_v2_2_2.aleo',
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' THEN json_inputs[1]:value::string
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -101,23 +94,19 @@ logic AS (
             ) AND function = 'swap_amm' THEN json_inputs[1]:value::string
         END AS initiator_address,
 
-        -- Input Amount
         CASE 
-            -- Credits/PUC In Helpers
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo',
                 'arcn_credits_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' THEN json_inputs[3]:value::string
-            -- Credits/PUC Out Helpers
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
                 'arcn_puc_out_helper_v2_2_2.aleo',
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' THEN json_inputs[4]:value::string
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -127,9 +116,7 @@ logic AS (
             ) AND function = 'swap_amm' THEN json_inputs[3]:value::string
         END AS input_amount,
 
-        -- Input Token ID
         CASE 
-            -- Credits/PUC In Helpers (always credits token)
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo',
                 'arcn_credits_in_helper_v2_2_3.aleo',
@@ -137,14 +124,12 @@ logic AS (
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' 
             THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-            -- Credits/PUC Out Helpers
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
                 'arcn_puc_out_helper_v2_2_2.aleo',
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' THEN json_inputs[2]:value::string
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -154,23 +139,19 @@ logic AS (
             ) AND function = 'swap_amm' THEN json_inputs[2]:value::string
         END AS input_token_id,
 
-        -- Output Amount (min output amount)
         CASE 
-            -- Credits/PUC In Helpers
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo',
                 'arcn_credits_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' THEN json_inputs[6]:value::string
-            -- Credits/PUC Out Helpers
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
                 'arcn_puc_out_helper_v2_2_2.aleo',
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' THEN json_inputs[5]:value::string
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -180,16 +161,13 @@ logic AS (
             ) AND function = 'swap_amm' THEN json_inputs[5]:value::string
         END AS output_amount,
 
-        -- Output Token ID
         CASE 
-            -- Credits/PUC In Helpers
             WHEN program_id IN (
                 'arcn_credits_in_helper_v2_2_2.aleo',
                 'arcn_credits_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_3.aleo',
                 'arcn_puc_in_helper_v2_2_4.aleo'
             ) AND function = 'swap_amm_credits_in' THEN json_inputs[4]:value::string
-            -- Credits/PUC Out Helpers (always credits token)
             WHEN program_id IN (
                 'arcn_credits_out_helper_v2_2_2.aleo',
                 'arcn_credits_out_helper_v2_2_3.aleo',
@@ -197,7 +175,6 @@ logic AS (
                 'arcn_puc_out_helper_v2_2_3.aleo'
             ) AND function = 'swap_amm_credits_out' 
             THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-            -- Core Pool/Public/Private
             WHEN program_id IN (
                 'arcn_pool_v2_2_2.aleo',
                 'arcn_pub_v2_2_2.aleo',
@@ -249,7 +226,6 @@ conditional_values AS (
         index,
         pool_id,
         initiator_address,
-        -- Create conditional columns
         CASE WHEN program_id = 'arcn_pool_v2_2_2.aleo' THEN input_amount ELSE NULL END AS pool_input_amount,
         CASE WHEN program_id != 'arcn_pool_v2_2_2.aleo' THEN input_amount ELSE NULL END AS helper_input_amount,
         CASE WHEN input_token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field' 
@@ -297,22 +273,18 @@ SELECT
     first_index,
     last_index,
     CASE 
-        -- Program-based privacy
         WHEN ARRAY_CONTAINS('arcn_priv_v2_2_2.aleo'::variant, involved_programs) 
             OR ARRAY_CONTAINS('arcn_priv_v2_2_3.aleo'::variant, involved_programs) THEN TRUE
-        -- Data-based privacy indicators
         WHEN initiator_address IS NULL THEN TRUE
         WHEN input_amount IS NULL AND tx_id NOT LIKE 'au%' THEN TRUE  -- Exclude unrelated nulls
         WHEN output_amount IS NULL AND tx_id NOT LIKE 'au%' THEN TRUE
         WHEN input_token_id LIKE 'ciphertext%' THEN TRUE
         WHEN output_token_id LIKE 'ciphertext%' THEN TRUE
-        -- If all key fields are present and no privacy indicators, then public
         WHEN initiator_address IS NOT NULL 
             AND input_amount IS NOT NULL 
             AND output_amount IS NOT NULL 
             AND input_token_id IS NOT NULL 
             AND output_token_id IS NOT NULL THEN FALSE
-        -- Default to private if uncertain
         ELSE TRUE
     END AS is_private,
     {{ dbt_utils.generate_surrogate_key(['TX_ID','initiator_address']) }} AS swaps_arcane_id,
