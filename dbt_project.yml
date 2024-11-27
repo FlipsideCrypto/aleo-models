@@ -51,7 +51,7 @@ tests:
 on-run-start:
   - '{{create_sps()}}'
   - '{{create_udfs()}}'
-  - "{{ create_decode_128_udf() }}"
+  - "{{create_decode_128_udf()}}"
 
 on-run-end:
   - '{{ apply_meta_as_tags(results) }}'

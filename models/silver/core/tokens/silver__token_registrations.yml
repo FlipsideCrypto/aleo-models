@@ -1,14 +1,10 @@
 version: 2
 
 models:
-  - name: silver__swaps_arcane    
+  - name: silver__token_registrations
+    
     columns:
-      - name: swaps_arcane_id
-        tests:
-          - unique
-          - not_null
-
-      - name: block_timestamp
+      - name: tx_id
         tests:
           - not_null
 
@@ -16,34 +12,45 @@ models:
         tests:
           - not_null
 
-      - name: tx_id
+      - name: block_timestamp
         tests:
           - not_null
 
-      - name: succeeded
+      - name: token_id
         tests:
           - not_null
 
-      - name: swapper
+      - name: token_name
         tests:
           - not_null
 
-      - name: swap_from_amount
+      - name: symbol
         tests:
           - not_null
 
-      - name: swap_from
+      - name: decimals
         tests:
           - not_null
 
-      - name: swap_to_amount
+      - name: max_supply
         tests:
           - not_null
 
-      - name: swap_to
+      - name: external_auth_required
         tests:
           - not_null
 
-      - name: root_action
+      - name: external_auth_party
+
+      - name: name_encoded
         tests:
+          - not_null
+
+      - name: symbol_encoded
+        tests:
+          - not_null
+
+      - name: tokens_id
+        tests:
+          - unique
           - not_null

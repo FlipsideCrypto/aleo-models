@@ -3,292 +3,115 @@
     unique_key='swaps_arcane_id',
     incremental_strategy='merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['modified_timestamp::DATE', 'input_token_id', 'output_token_id'],
+    cluster_by = ['modified_timestamp::DATE', 'swap_from_name', 'swap_to_name'],
     tags=['noncore', 'full_test']
 ) }}
 
 -- depends on: {{ ref('core__fact_transitions') }}
-WITH parsed_data AS (
-    SELECT
+with 
+root_actions as (
+    select
+        tx_id,
+        program_id || '/' || function as root_action
+    from
+        {{ ref('core__fact_transitions') }}
+    where
+        program_id ilike 'arcn%'
+        and function ilike '%swap%'
+    {% if is_incremental() %}
+    and
+        modified_timestamp >= (
+            select
+                MAX(
+                    modified_timestamp
+                )
+            from
+                {{ this }}
+        )
+    {% endif %}
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY tx_id 
+        ORDER BY index DESC
+    ) = 1
+),
+reports as (
+    select
         block_timestamp,
         block_id,
         tx_id,
         succeeded,
-        program_id,
-        function,
-        index,
-        PARSE_JSON(INPUTS) AS json_inputs
-    FROM 
-        aleo.core.fact_transitions
-    WHERE
-        succeeded
-        AND program_id IN (
-            'arcn_credits_in_helper_v2_2_2.aleo',
-            'arcn_credits_in_helper_v2_2_3.aleo',
-            'arcn_credits_out_helper_v2_2_2.aleo',
-            'arcn_credits_out_helper_v2_2_3.aleo',
-            'arcn_pool_v2_2_2.aleo',
-            'arcn_priv_v2_2_2.aleo',
-            'arcn_priv_v2_2_3.aleo',
-            'arcn_pub_v2_2_2.aleo',
-            'arcn_pub_v2_2_3.aleo',
-            'arcn_puc_in_helper_v2_2_3.aleo',
-            'arcn_puc_in_helper_v2_2_4.aleo',
-            'arcn_puc_out_helper_v2_2_2.aleo',
-            'arcn_puc_out_helper_v2_2_3.aleo'
-        )
-        AND function IN (
-            'swap_amm',
-            'swap_amm_credits_in',
-            'swap_amm_credits_out'
-        )
-),
-logic AS (
-    SELECT
-        block_timestamp,
-        block_id,
-        tx_id,
-        program_id,
-        function,
-        index,
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo', 
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' THEN json_inputs[0]:value::string
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' THEN json_inputs[0]:value::string
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[0]:value::string
-        END AS pool_id,
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo', 
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' THEN json_inputs[1]:value::string
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' THEN json_inputs[1]:value::string
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[1]:value::string
-        END AS initiator_address,
-
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo',
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' THEN json_inputs[3]:value::string
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' THEN json_inputs[4]:value::string
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[3]:value::string
-        END AS input_amount,
-
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo',
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' 
-            THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' THEN json_inputs[2]:value::string
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[2]:value::string
-        END AS input_token_id,
-
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo',
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' THEN json_inputs[6]:value::string
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' THEN json_inputs[5]:value::string
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[5]:value::string
-        END AS output_amount,
-
-        CASE 
-            WHEN program_id IN (
-                'arcn_credits_in_helper_v2_2_2.aleo',
-                'arcn_credits_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_3.aleo',
-                'arcn_puc_in_helper_v2_2_4.aleo'
-            ) AND function = 'swap_amm_credits_in' THEN json_inputs[4]:value::string
-            WHEN program_id IN (
-                'arcn_credits_out_helper_v2_2_2.aleo',
-                'arcn_credits_out_helper_v2_2_3.aleo',
-                'arcn_puc_out_helper_v2_2_2.aleo',
-                'arcn_puc_out_helper_v2_2_3.aleo'
-            ) AND function = 'swap_amm_credits_out' 
-            THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-            WHEN program_id IN (
-                'arcn_pool_v2_2_2.aleo',
-                'arcn_pub_v2_2_2.aleo',
-                'arcn_pub_v2_2_3.aleo',
-                'arcn_priv_v2_2_2.aleo',
-                'arcn_priv_v2_2_3.aleo'
-            ) AND function = 'swap_amm' THEN json_inputs[4]:value::string
-        END AS output_token_id
-
-    FROM parsed_data
-),
-cleaned as (
-    SELECT
-        block_timestamp,
-        block_id,
-        tx_id,
-        program_id,
-        function,
-        index,
-        pool_id,
-        case when initiator_address ilike 'aleo%' then initiator_address
-        else null
-        end as initiator_address,
-        case when input_amount ilike '%field' then null
-        when input_amount ilike 'ciphertext%' then null
-        else split_part(input_amount, 'u', 1) :: number
-        end as input_amount,
-        case when input_token_id ilike 'ciphertext%' then null
-        else input_token_id
-        end as input_token_id,
-        case when output_amount ilike '%field' then null
-        when output_amount ilike 'ciphertext%' then null
-        else split_part(output_amount, 'u', 1) :: number
-        end as output_amount,
-        case when output_token_id = 'false' then null
-        when output_token_id ilike 'ciphertext%' then null
-        else output_token_id
-        end as output_token_id,
+        replace(inputs[0] :value, 'field', '') as address_from,
+        replace(inputs[1] :value, 'field', '') as address_to,
+        replace(inputs[2] :value, 'field', '') as swap_from,
+        replace(inputs[3] :value, 'field', '') as swap_to,
+        replace(inputs[4] :value, 'u128', '') as amount_from,
+        replace(inputs[5] :value, 'u128', '') as amount_to
     from
-        logic
+        aleo.core.fact_transitions
+    where
+        program_id = 'arcn_compliance_v1.aleo'
+        and function = 'report'
+    {% if is_incremental() %}
+    AND
+        modified_timestamp >= (
+            SELECT
+                MAX(
+                    modified_timestamp
+                )
+            FROM
+                {{ this }}
+        )
+    {% endif %}
 ),
-conditional_values AS (
-    SELECT
-        block_timestamp,
-        block_id,
-        tx_id,
-        program_id,
-        function,
-        index,
-        pool_id,
-        initiator_address,
-        CASE WHEN program_id = 'arcn_pool_v2_2_2.aleo' THEN input_amount ELSE NULL END AS pool_input_amount,
-        CASE WHEN program_id != 'arcn_pool_v2_2_2.aleo' THEN input_amount ELSE NULL END AS helper_input_amount,
-        CASE WHEN input_token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field' 
-            THEN input_token_id ELSE NULL END AS non_credits_input_token,
-        CASE WHEN input_token_id = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' 
-            THEN input_token_id ELSE NULL END AS credits_input_token,
-        CASE WHEN program_id = 'arcn_pool_v2_2_2.aleo' THEN output_amount ELSE NULL END AS pool_output_amount,
-        CASE WHEN program_id != 'arcn_pool_v2_2_2.aleo' THEN output_amount ELSE NULL END AS helper_output_amount,
-        CASE WHEN output_token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field' 
-            THEN output_token_id ELSE NULL END AS non_credits_output_token,
-        CASE WHEN output_token_id = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' 
-            THEN output_token_id ELSE NULL END AS credits_output_token
-    FROM cleaned
-),
-aggregated_swaps AS (
-    SELECT
-        block_timestamp,
-        block_id,
-        tx_id,
-        ARRAY_AGG(DISTINCT program_id) AS involved_programs,
-        ARRAY_AGG(DISTINCT function) AS involved_functions,
-        MIN(index) AS first_index,
-        MAX(index) AS last_index,
-        MAX(pool_id) AS pool_id,
-        MAX(initiator_address) AS initiator_address,
-        COALESCE(MAX(pool_input_amount), MAX(helper_input_amount)) AS input_amount,
-        COALESCE(MAX(non_credits_input_token), MAX(credits_input_token)) AS input_token_id,
-        COALESCE(MAX(pool_output_amount), MAX(helper_output_amount)) AS output_amount,
-        COALESCE(MAX(non_credits_output_token), MAX(credits_output_token)) AS output_token_id
-    FROM conditional_values
-    GROUP BY block_timestamp, block_id, tx_id
-)
-SELECT 
+agg as (
+select
     block_timestamp,
     block_id,
     tx_id,
-    pool_id,
-    initiator_address,
-    input_amount,
-    input_token_id,
-    output_amount,
-    output_token_id,
-    involved_programs,
-    involved_functions,
-    first_index,
-    last_index,
+    succeeded,
+    root_action,
+    address_from,
+    address_to,
     CASE 
-        WHEN ARRAY_CONTAINS('arcn_priv_v2_2_2.aleo'::variant, involved_programs) 
-            OR ARRAY_CONTAINS('arcn_priv_v2_2_3.aleo'::variant, involved_programs) THEN TRUE
-        WHEN initiator_address IS NULL THEN TRUE
-        WHEN input_amount IS NULL AND tx_id NOT LIKE 'au%' THEN TRUE  -- Exclude unrelated nulls
-        WHEN output_amount IS NULL AND tx_id NOT LIKE 'au%' THEN TRUE
-        WHEN input_token_id LIKE 'ciphertext%' THEN TRUE
-        WHEN output_token_id LIKE 'ciphertext%' THEN TRUE
-        WHEN initiator_address IS NOT NULL 
-            AND input_amount IS NOT NULL 
-            AND output_amount IS NOT NULL 
-            AND input_token_id IS NOT NULL 
-            AND output_token_id IS NOT NULL THEN FALSE
-        ELSE TRUE
-    END AS is_private,
-    {{ dbt_utils.generate_surrogate_key(['TX_ID','initiator_address']) }} AS swaps_arcane_id,
-    SYSDATE() as inserted_timestamp,
-    SYSDATE() as modified_timestamp,
+        WHEN swap_from = '3443843282313283355522573239085696902919850365217539366784739393210722344986' THEN 'Aleo'
+        ELSE swap_from
+    END as swap_from,
+    CASE 
+        WHEN swap_to = '3443843282313283355522573239085696902919850365217539366784739393210722344986' THEN 'Aleo'
+        ELSE swap_to
+    END as swap_to,
+    amount_from :: number as amount_from,
+    amount_to :: number as amount_to
+from
+    reports
+join
+    root_actions using(tx_id)
+)
+
+select 
+    a.block_timestamp,
+    a.block_id,
+    a.tx_id,
+    a.succeeded,
+    a.address_from as swapper,
+    a.amount_from / power(10, coalesce(b.decimals, 6)) as swap_from_amount,
+    coalesce(b.token_name, a.swap_from) as swap_from_name,
+    case
+        when b.token_id is null then '3443843282313283355522573239085696902919850365217539366784739393210722344986'
+        else b.token_id
+    end as swap_from_id,
+    a.amount_to / power(10, coalesce(c.decimals, 6)) as swap_to_amount,
+    coalesce(c.token_name, a.swap_to) as swap_to_name,
+    case
+        when c.token_id is null then '3443843282313283355522573239085696902919850365217539366784739393210722344986'
+        else c.token_id
+    end as swap_to_id,
+    root_action,
+    {{ dbt_utils.generate_surrogate_key(['a.tx_id','b.token_id']) }} AS swaps_arcane_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
-FROM aggregated_swaps
+from
+    agg a
+    left join {{ ref('silver__token_registrations') }} b on a.swap_from = b.token_id
+    left join {{ ref('silver__token_registrations') }} c on a.swap_to = c.token_id
