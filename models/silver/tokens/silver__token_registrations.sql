@@ -1,5 +1,5 @@
 {{ config(
-    materialized = 'view',
+    materialized = 'table',
     tags = ['noncore', 'full_test']
 ) }}
 
@@ -13,7 +13,6 @@ with base_data as (
     where program_id = 'token_registry.aleo' 
     and function = 'register_token'
     and succeeded
-    and block_id != 186732
 ),
 
 flattened_inputs as (
@@ -41,6 +40,24 @@ parsed_inputs as (
         max(case when input_index = 5 then value end) as external_auth_required_raw,
         max(case when input_index = 6 then value end) as external_auth_party
     from flattened_inputs
+    where block_id != 186732
+    group by tx_id, block_id, block_timestamp
+
+    union all
+
+    select 
+        tx_id,
+        block_id,
+        block_timestamp,
+        max(case when input_index = 1 then value end) as token_id_raw,
+        max(case when input_index = 3 then value end) as name_raw,
+        max(case when input_index = 5 then value end) as symbol_raw,
+        max(case when input_index = 6 then value end) as decimals_raw,
+        max(case when input_index = 8 then value end) as max_supply_raw,
+        max(case when input_index = 10 then value end) as external_auth_required_raw,
+        max(case when input_index = 12 then value end) as external_auth_party
+    from flattened_inputs
+    where block_id = 186732 -- exceptional pondo token from early mainnet
     group by tx_id, block_id, block_timestamp
 ),
 cleaned_strings as (
