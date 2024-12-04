@@ -36,11 +36,7 @@ models:
         tests:
           - not_null
 
-      - name: token1_id
-        tests:
-          - not_null
-
-      - name: token2_id
+      - name: token1_amount
         tests:
           - not_null
 
@@ -48,15 +44,19 @@ models:
         tests:
           - not_null
 
-      - name: token2_name
-        tests:
-          - not_null
-
-      - name: token1_amount
+      - name: token1_id
         tests:
           - not_null
 
       - name: token2_amount
+        tests:
+          - not_null
+
+      - name: token2_name
+        tests:
+          - not_null
+
+      - name: token2_id
         tests:
           - not_null
 

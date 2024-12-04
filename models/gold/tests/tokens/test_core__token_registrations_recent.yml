@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: test_core__token_registrations_recent
+    description: Tests for the recent view of the token registrations model.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID_CREATED
+            - TOKEN_ID
+    columns:
+      - name: BLOCK_ID_CREATED
+        tests:
+          - not_null
+
+      - name: BLOCK_TIMESTAMP_CREATED
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: hour
+              interval: 3
+
+      - name: TX_ID_CREATED
+        tests:
+          - not_null
+          - unique
+
+      - name: TOKEN_ID
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: TOKEN_NAME
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: SYMBOL
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: DECIMALS
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: MAX_SUPPLY
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: EXTERNAL_AUTH_REQUIRED
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: EXTERNAL_AUTH_PARTY
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: NAME_ENCODED
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: SYMBOL_ENCODED
+        tests:
+          - dbt_expectations.expect_column_to_exist
+
+      - name: DIM_TOKEN_REGISTRATIONS_ID
+        tests:
+          - unique
+          - not_null
+
+      - name: INSERTED_TIMESTAMP
+        tests:
+          - not_null
+
+      - name: MODIFIED_TIMESTAMP
+        tests:
+          - not_null

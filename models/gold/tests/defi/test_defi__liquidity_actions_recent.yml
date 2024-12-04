@@ -18,3 +18,59 @@ models:
           - dbt_expectations.expect_row_values_to_have_recent_data:
               datepart: hour
               interval: 3
+
+      - name: block_id
+        tests:
+          - not_null
+
+      - name: tx_id
+        tests:
+          - not_null
+
+      - name: succeeded
+        tests:
+          - not_null
+
+      - name: root_action
+        tests:
+          - not_null
+
+      - name: liquidity_action
+        tests:
+          - not_null
+
+      - name: liquidity_provider
+        tests:
+          - not_null
+
+      - name: token1_amount
+        tests:
+          - not_null
+
+      - name: token1_name
+        tests:
+          - not_null
+
+      - name: token1_id
+        tests:
+          - not_null
+
+      - name: token2_amount
+        tests:
+          - not_null
+
+      - name: token2_name
+        tests:
+          - not_null
+
+      - name: token2_id
+        tests:
+          - not_null
+
+      - name: inserted_timestamp
+        tests:
+          - not_null
+
+      - name: modified_timestamp
+        tests:
+          - not_null

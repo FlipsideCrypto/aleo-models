@@ -1,5 +1,5 @@
 {{ config(
-    materialized = 'table',
+    materialized = 'view',
     tags = ['core', 'full_test']
 ) }}
 
@@ -65,7 +65,7 @@ cleaned_strings as (
         tx_id,
         block_id,
         block_timestamp,
-        split_part(token_id_raw, 'field', 1) as token_id,
+        token_id_raw as token_id,
         split_part(name_raw, 'u', 1) as name_encoded,
         split_part(symbol_raw, 'u', 1) as symbol_encoded,
         split_part(decimals_raw, 'u', 1) as decimals,
@@ -76,12 +76,12 @@ cleaned_strings as (
         parsed_inputs
 ) 
 select 
-    tx_id,
-    block_id,
-    block_timestamp,
+    tx_id as tx_id_created,
+    block_id as block_id_created,
+    block_timestamp as block_timestamp_created,
     token_id,
-    udf_hex_to_string(substr(utils.udf_int_to_hex(name_encoded), 3)) as token_name,
-    udf_hex_to_string(substr(udf_int_to_hex(symbol_encoded), 3)) as symbol,
+    utils.udf_hex_to_string(substr(utils.udf_int_to_hex(name_encoded), 3)) as token_name,
+    utils.udf_hex_to_string(substr(utils.udf_int_to_hex(symbol_encoded), 3)) as symbol,
     decimals,
     max_supply,
     external_auth_required,
@@ -89,9 +89,10 @@ select
     name_encoded,
     symbol_encoded,
     {{ dbt_utils.generate_surrogate_key(
-        ['tx_id', 'token_name']
+        ['token_id']
     ) }} AS tokens_id,
     SYSDATE() as inserted_timestamp,
     SYSDATE() as modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
-from cleaned_strings
+from 
+    cleaned_strings

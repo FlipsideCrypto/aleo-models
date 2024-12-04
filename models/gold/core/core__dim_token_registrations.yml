@@ -4,18 +4,18 @@ models:
   - name: core__dim_token_registrations
     description: Dimension table containing information about token registrations on the network.
     columns:
-      - name: TX_ID
-        description: "{{ doc('tx_id') }}"
+      - name: TX_ID_CREATED
+        description: "Transaction ID when the token was created"
         tests:
           - dbt_expectations.expect_column_to_exist
 
-      - name: BLOCK_ID
-        description: "{{ doc('block_id') }}"
+      - name: BLOCK_ID_CREATED
+        description: "Block ID when the token was created"
         tests:
           - dbt_expectations.expect_column_to_exist
 
-      - name: BLOCK_TIMESTAMP
-        description: "{{ doc('block_timestamp') }}"
+      - name: BLOCK_TIMESTAMP_CREATED
+        description: "Block timestamp when the token was created"
         tests:
           - dbt_expectations.expect_column_to_exist
 
@@ -23,6 +23,8 @@ models:
         description: "The ID of the token"
         tests:
           - dbt_expectations.expect_column_to_exist
+          - not_null
+          - unique
 
       - name: TOKEN_NAME
         description: "The decoded name of the token"

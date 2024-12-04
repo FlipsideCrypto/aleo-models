@@ -10,7 +10,7 @@
 ) }}
 
 WITH arcane AS (
-    SELECT
+    SELECT 
         block_timestamp,
         block_id,
         tx_id,
@@ -24,7 +24,7 @@ WITH arcane AS (
         token2_name,
         token1_amount,
         token2_amount,
-        'Arcane Finance' as liquidity_pool_protocol
+        'Arcane Finance' AS liquidity_pool_protocol
     FROM 
         {{ ref('silver__liquidity_pool_actions_arcane') }}
 

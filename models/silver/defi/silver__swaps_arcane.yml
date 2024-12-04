@@ -32,7 +32,11 @@ models:
         tests:
           - not_null
 
-      - name: swap_from
+      - name: swap_from_name
+        tests:
+          - not_null
+
+      - name: swap_from_id
         tests:
           - not_null
 
@@ -40,7 +44,11 @@ models:
         tests:
           - not_null
 
-      - name: swap_to
+      - name: swap_to_name
+        tests:
+          - not_null
+
+      - name: swap_to_id
         tests:
           - not_null
 

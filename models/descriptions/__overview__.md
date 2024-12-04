@@ -35,6 +35,7 @@ There is more information on how to use dbt docs in the last section of this doc
 
 **Fact Tables:**
 - [defi.fact_swaps](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.defi__fact_swaps)
+- [defi.fact_liquidity_actions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.defi__fact_liquidity_actions)
 
 ### Price Tables (`aleo`.`PRICE`.`<table_name>`)
 

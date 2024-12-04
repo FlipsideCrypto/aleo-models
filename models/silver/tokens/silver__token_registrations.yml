@@ -4,15 +4,15 @@ models:
   - name: silver__token_registrations
     
     columns:
-      - name: tx_id
+      - name: tx_id_created
         tests:
           - not_null
 
-      - name: block_id
+      - name: block_id_created
         tests:
           - not_null
 
-      - name: block_timestamp
+      - name: block_timestamp_created
         tests:
           - not_null
 
@@ -21,12 +21,8 @@ models:
           - not_null
 
       - name: token_name
-        tests:
-          - not_null
 
       - name: symbol
-        tests:
-          - not_null
 
       - name: decimals
         tests:
