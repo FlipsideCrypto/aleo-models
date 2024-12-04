@@ -8,7 +8,7 @@ with base_data as (
         tx_id,
         block_id,
         block_timestamp,
-        inputs
+        INPUTS
     from aleo_dev.core.fact_transitions
     where program_id = 'token_registry.aleo' 
     and function = 'register_token'
@@ -24,7 +24,7 @@ flattened_inputs as (
         value:value::string as value,
         row_number() over (partition by tx_id order by index) - 1 as input_index
     from base_data,
-    lateral flatten(input => inputs)
+    lateral flatten(input => INPUTS)
 ),
 
 parsed_inputs as (
@@ -65,7 +65,7 @@ cleaned_strings as (
         tx_id,
         block_id,
         block_timestamp,
-        token_id_raw,
+        split_part(token_id_raw, 'field', 1) as token_id,
         split_part(name_raw, 'u', 1) as name_encoded,
         split_part(symbol_raw, 'u', 1) as symbol_encoded,
         split_part(decimals_raw, 'u', 1) as decimals,
@@ -79,9 +79,9 @@ select
     tx_id,
     block_id,
     block_timestamp,
-    token_id_raw as token_id,
-    utils.udf_hex_to_string(substr(utils.udf_int_to_hex(name_encoded), 3)) as token_name,
-    utils.udf_hex_to_string(substr(utils.udf_int_to_hex(symbol_encoded), 3)) as symbol,
+    token_id,
+    udf_hex_to_string(substr(utils.udf_int_to_hex(name_encoded), 3)) as token_name,
+    udf_hex_to_string(substr(udf_int_to_hex(symbol_encoded), 3)) as symbol,
     decimals,
     max_supply,
     external_auth_required,

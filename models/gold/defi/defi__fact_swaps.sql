@@ -55,7 +55,7 @@ SELECT
     swap_to_id,
     root_action,
     swap_protocol,
-    {{ dbt_utils.generate_surrogate_key(['TX_ID','swapper']) }} AS fact_swaps_id,
+    {{ dbt_utils.generate_surrogate_key(['tx_id','swap_protocol', 'swapper']) }} AS fact_swaps_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id

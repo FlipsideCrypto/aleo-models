@@ -3,7 +3,7 @@
     unique_key='swaps_arcane_id',
     incremental_strategy='merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['modified_timestamp::DATE', 'swap_from_name', 'swap_to_name'],
+    cluster_by = ['modified_timestamp::DATE', 'swapper','swap_from_name', 'swap_to_name'],
     tags=['noncore', 'full_test']
 ) }}
 

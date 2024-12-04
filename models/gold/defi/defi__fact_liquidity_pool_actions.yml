@@ -1,0 +1,109 @@
+version: 2
+models:
+  - name: defi__fact_liquidity_pool_actions
+    description: Records of all liquidity pool actions on Aleo, including adding and removing liquidity.
+    columns:
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+          - not_null
+
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: SUCCEEDED
+        description: "{{ doc('succeeded') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - accepted_values:
+              values: [true, false]
+          - not_null
+
+      - name: ROOT_ACTION
+        description: "The program and function that initiated the liquidity pool action"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: LIQUIDITY_ACTION
+        description: "The type of liquidity action performed (e.g., add, remove)"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: LIQUIDITY_PROVIDER
+        description: "The address that performed the liquidity pool action"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN1_ID
+        description: "The token id of the first token in the liquidity pair"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN2_ID
+        description: "The token id of the second token in the liquidity pair"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN1_NAME
+        description: "The name of the first token in the liquidity pair"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN2_NAME
+        description: "The name of the second token in the liquidity pair"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN1_AMOUNT
+        description: "The amount of the first token added or removed from the pool"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN2_AMOUNT
+        description: "The amount of the second token added or removed from the pool"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: LIQUIDITY_POOL_PROTOCOL
+        description: "The name of the protocol where the liquidity pool action occurred"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FACT_LIQUIDITY_POOL_ACTIONS_ID
+        description: '{{ doc("pk") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'
+        tests:
+          - not_null
+
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'
+        tests:
+          - not_null
