@@ -6,7 +6,7 @@
 SELECT
     {{ target.database }}.live.udf_api(
         'GET',
-        '{Service}/latest/height',
+        '{Service}/block/height/latest',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
