@@ -3,30 +3,45 @@
     unique_key = 'swaps_arcane_id',
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['modified_timestamp::DATE', 'swapper', 'swap_from_name', 'swap_to_name'],
+    cluster_by = ['modified_timestamp::DATE'],
     tags = ['noncore', 'full_test']
 ) }}
 
-WITH root_actions AS (
+-- depends on {{ ref('core__fact_transitions') }}
+WITH base_transitions AS (
     SELECT
+        block_timestamp,
+        block_id,
         tx_id,
-        program_id || '/' || function AS root_action
+        succeeded,
+        program_id,
+        function,
+        inputs,
+        index,
+        modified_timestamp
     FROM
         {{ ref('core__fact_transitions') }}
     WHERE
         program_id ILIKE 'arcn%'
-        AND function ILIKE '%swap%'
     {% if is_incremental() %}
-        AND modified_timestamp >= (
-            SELECT
-                MAX(modified_timestamp)
-            FROM
-                {{ this }}
-        )
+    AND modified_timestamp >= (
+        SELECT
+            MAX(modified_timestamp)
+        FROM
+            {{ this }}
+    )
     {% endif %}
+),
+root_actions AS (
+    SELECT
+        tx_id,
+        program_id || '/' || function AS root_action
+    FROM
+        base_transitions
+    WHERE
+        function ILIKE '%swap%'
     QUALIFY ROW_NUMBER() OVER (PARTITION BY tx_id ORDER BY index DESC) = 1
 ),
-
 reports AS (
     SELECT
         block_timestamp,
@@ -40,20 +55,11 @@ reports AS (
         REPLACE(inputs[4]:value, 'u128', '') AS amount_from,
         REPLACE(inputs[5]:value, 'u128', '') AS amount_to
     FROM
-        aleo.core.fact_transitions
+        base_transitions
     WHERE
         program_id = 'arcn_compliance_v1.aleo'
         AND function = 'report'
-    {% if is_incremental() %}
-        AND modified_timestamp >= (
-            SELECT
-                MAX(modified_timestamp)
-            FROM
-                {{ this }}
-        )
-    {% endif %}
 ),
-
 agg AS (
     SELECT
         block_timestamp,
@@ -63,16 +69,10 @@ agg AS (
         root_action,
         address_from,
         address_to,
-        CASE 
-            WHEN swap_from = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' THEN 'Aleo'
-            ELSE swap_from
-        END AS swap_from,
-        CASE 
-            WHEN swap_to = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' THEN 'Aleo'
-            ELSE swap_to
-        END AS swap_to,
-        amount_from::number AS amount_from,
-        amount_to::number AS amount_to
+        swap_from,
+        swap_to,
+        amount_from :: float AS amount_from,
+        amount_to :: float AS amount_to
     FROM
         reports
     JOIN
@@ -85,26 +85,22 @@ SELECT
     a.tx_id,
     a.succeeded,
     a.address_from AS swapper,
-    a.amount_from / power(10, COALESCE(b.decimals, 6)) AS swap_from_amount,
-    COALESCE(b.token_name, a.swap_from) AS swap_from_name,
-    CASE
-        WHEN b.token_id IS NULL THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-        ELSE b.token_id
-    END AS swap_from_id,
-    a.amount_to / power(10, COALESCE(c.decimals, 6)) AS swap_to_amount,
-    COALESCE(c.token_name, a.swap_to) AS swap_to_name,
-    CASE
-        WHEN c.token_id IS NULL THEN '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
-        ELSE c.token_id
-    END AS swap_to_id,
-    root_action,
-    {{ dbt_utils.generate_surrogate_key(['a.tx_id', 'b.token_id']) }} AS swaps_arcane_id,
+    a.amount_from as from_amount_raw,
+    a.amount_from / power(10, t1.decimals) AS from_amount,
+    t1.token_name AS from_name,
+    a.swap_from AS from_id,
+    a.amount_to as to_amount_raw,
+    a.amount_to / power(10, t2.decimals) AS to_amount,
+    t2.token_name AS to_name,
+    a.swap_to AS to_id,
+    a.root_action,
+    {{ dbt_utils.generate_surrogate_key(['a.tx_id', 't1.token_id']) }} AS swaps_arcane_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id
 FROM
     agg a
 LEFT JOIN 
-    {{ ref('silver__token_registrations') }} b ON a.swap_from = b.token_id
+    {{ ref('silver__token_registrations') }} t1 ON a.swap_from = t1.token_id
 LEFT JOIN 
-    {{ ref('silver__token_registrations') }} c ON a.swap_to = c.token_id
+    {{ ref('silver__token_registrations') }} t2 ON a.swap_to = t2.token_id

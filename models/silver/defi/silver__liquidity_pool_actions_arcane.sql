@@ -7,11 +7,33 @@
     tags = ['noncore', 'full_test']
 ) }}
 
-WITH root_actions AS (
-    SELECT
+-- depends on {{ ref('core__fact_transitions') }}
+WITH base_transitions AS (
+    SELECT 
+        block_timestamp,
+        block_id,
         tx_id,
+        succeeded,
         program_id,
         function,
+        INPUTS
+    FROM 
+        {{ ref('core__fact_transitions') }}
+    WHERE 
+        program_id ILIKE 'arcn%'
+        AND function NOT ILIKE '%credits%'
+        {% if is_incremental() %}
+        AND modified_timestamp >= (
+            SELECT
+                MAX(modified_timestamp)
+            FROM
+                {{ this }}
+        )
+        {% endif %}
+),
+root_actions AS (
+    SELECT
+        tx_id,
         program_id || '/' || function AS root_action,
         CASE 
             WHEN function ILIKE '%add%' THEN 'Add'
@@ -19,13 +41,10 @@ WITH root_actions AS (
             ELSE 'OTHER'
         END AS liquidity_action
     FROM
-        {{ ref('core__fact_transitions') }}
+        base_transitions
     WHERE
-        program_id ILIKE 'arcn%'
-        AND function ILIKE '%liq%'
-        AND function NOT ILIKE '%credits%'
+        function ILIKE '%liq%'
 ),
-
 reports AS (
     SELECT
         block_timestamp,
@@ -34,12 +53,10 @@ reports AS (
         succeeded,
         INPUTS
     FROM
-        {{ ref('core__fact_transitions') }}
+        base_transitions
     WHERE
-        program_id ILIKE 'arcn%'
-        AND function = 'report'
+        function = 'report'
 ),
-
 parsed AS (
     SELECT
         block_timestamp,
@@ -51,14 +68,13 @@ parsed AS (
         inputs[1]:value::string AS liquidity_provider,
         inputs[2]:value::string AS token1_id,
         inputs[3]:value::string AS token2_id,
-        split_part(inputs[4]:value, 'u', 1)::number AS token1_amount,
-        split_part(inputs[5]:value, 'u', 1)::number AS token2_amount
+        split_part(inputs[4]:value, 'u', 1) :: number AS token1_amount_raw,
+        split_part(inputs[5]:value, 'u', 1) :: number AS token2_amount_raw
     FROM 
         root_actions
     JOIN
         reports USING(tx_id)
 ),
-
 tokens AS (
     SELECT
         token_id,
@@ -68,7 +84,6 @@ tokens AS (
     FROM
         {{ ref('silver__token_registrations') }}
 )
-
 SELECT 
     p.block_timestamp,
     p.block_id,
@@ -77,17 +92,13 @@ SELECT
     p.root_action,
     p.liquidity_action,
     p.liquidity_provider,
-    p.token1_amount / power(10, COALESCE(t1.decimals, 6)) AS token1_amount,
-    CASE
-        WHEN p.token1_id = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' THEN 'Aleo'
-        ELSE t1.token_name
-    END AS token1_name,
+    p.token1_amount_raw,
+    p.token1_amount_raw / power(10, t1.decimals) AS token1_amount,
+    t1.token_name AS token1_name,
     p.token1_id,
-    p.token2_amount / power(10, COALESCE(t2.decimals, 6)) AS token2_amount,
-    CASE
-        WHEN p.token2_id = '3443843282313283355522573239085696902919850365217539366784739393210722344986field' THEN 'Aleo'
-        ELSE t2.token_name
-    END AS token2_name,
+    p.token2_amount_raw,
+    p.token2_amount_raw / power(10, t2.decimals) AS token2_amount,
+    t2.token_name AS token2_name,
     p.token2_id,
     {{ dbt_utils.generate_surrogate_key(['p.tx_id', 'p.token1_id', 'p.token2_id']) }} AS liquidity_pool_actions_arcane_id,
     SYSDATE() AS inserted_timestamp,

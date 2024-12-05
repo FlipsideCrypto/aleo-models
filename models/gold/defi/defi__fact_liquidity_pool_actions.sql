@@ -5,7 +5,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
     cluster_by = ['block_timestamp::DATE'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(liquidity_pool_protocol,liquidity_provider,root_action,liquidity_action,token1_id,token2_id,token1_name,token2_name,liquidity_pool_protocol);",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(liquidity_provider,token1_name,token2_name);",
     tags = ['noncore', 'full_test']
 ) }}
 

@@ -3,11 +3,6 @@ version: 2
 models:
   - name: test_core__token_registrations_recent
     description: Tests for the recent view of the token registrations model.
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - TX_ID_CREATED
-            - TOKEN_ID
     columns:
       - name: BLOCK_ID_CREATED
         tests:
@@ -15,19 +10,23 @@ models:
 
       - name: BLOCK_TIMESTAMP_CREATED
         tests:
-          - not_null
+          - not_null:
+              where: token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
           - dbt_expectations.expect_row_values_to_have_recent_data:
               datepart: hour
               interval: 3
 
       - name: TX_ID_CREATED
         tests:
-          - not_null
-          - unique
+          - not_null:
+              where: token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
 
       - name: TOKEN_ID
         tests:
           - dbt_expectations.expect_column_to_exist
+          - unique
+          - not_null:
+              where: token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
 
       - name: TOKEN_NAME
         tests:

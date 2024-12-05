@@ -28,27 +28,35 @@ models:
         tests:
           - not_null
 
-      - name: swap_from_amount
+      - name: from_amount_raw
         tests:
           - not_null
 
-      - name: swap_from_name
+      - name: from_amount
         tests:
           - not_null
 
-      - name: swap_from_id
+      - name: from_name
         tests:
           - not_null
 
-      - name: swap_to_amount
+      - name: from_id
         tests:
           - not_null
 
-      - name: swap_to_name
+      - name: to_amount_raw
         tests:
           - not_null
 
-      - name: swap_to_id
+      - name: to_amount
+        tests:
+          - not_null
+
+      - name: to_name
+        tests:
+          - not_null
+
+      - name: to_id
         tests:
           - not_null
 

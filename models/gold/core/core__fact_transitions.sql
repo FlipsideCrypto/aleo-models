@@ -4,8 +4,8 @@
     unique_key = ['fact_transitions_id'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['block_timestamp::DATE', 'program_id', 'function'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,transition_id,program_id,function,inputs,outputs);",
+    cluster_by = ['block_timestamp::DATE'],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_id,transition_id,program_id,function);",
     tags = ['core', 'full_test']
 ) }}
 

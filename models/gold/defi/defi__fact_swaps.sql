@@ -3,7 +3,8 @@
     meta = { 'database_tags':{ 'table':{ 'PURPOSE': 'SWAPS' }}},
     unique_key = ['fact_swaps_id'],
     incremental_predicates = ['DBT_INTERNAL_DEST.block_timestamp::DATE >= (select min(block_timestamp::DATE) from ' ~ generate_tmp_view_name(this) ~ ')'],
-    cluster_by = ['block_timestamp::DATE', 'succeeded',' swapper', 'swap_from_name', 'swap_from_id', 'swap_to_name', 'swap_to_id', 'root_action'],
+    cluster_by = ['block_timestamp::DATE'],
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(root_action,swapper,from_name,to_name);",
     merge_exclude_columns = ['inserted_timestamp'],
     tags = ['noncore', 'full_test']
 ) }}
@@ -15,14 +16,14 @@ WITH arcane AS (
         tx_id,
         succeeded,
         swapper,
-        swap_from_amount,
-        swap_from_name,
-        swap_from_id,
-        swap_to_amount,
-        swap_to_name,
-        swap_to_id,
+        from_amount,
+        from_name,
+        from_id,
+        to_amount,
+        to_name,
+        to_id,
         root_action,
-        'Arcane Finance' as swap_protocol
+        'Arcane Finance' as platform
     FROM 
         {{ ref('silver__swaps_arcane') }}
     {% if is_incremental() %}
@@ -47,15 +48,15 @@ SELECT
     tx_id,
     succeeded,
     swapper,
-    swap_from_amount,
-    swap_from_name,
-    swap_from_id,
-    swap_to_amount,
-    swap_to_name,
-    swap_to_id,
+    from_amount,
+    from_name,
+    from_id,
+    to_amount,
+    to_name,
+    to_id,
     root_action,
-    swap_protocol,
-    {{ dbt_utils.generate_surrogate_key(['tx_id','swap_protocol', 'swapper']) }} AS fact_swaps_id,
+    platform,
+    {{ dbt_utils.generate_surrogate_key(['tx_id','platform', 'swapper']) }} AS fact_swaps_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     '{{ invocation_id }}' AS _invocation_id

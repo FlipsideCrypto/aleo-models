@@ -38,37 +38,37 @@ models:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_FROM_AMOUNT
+      - name: FROM_AMOUNT
         description: "The amount of tokens input into the swap"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_FROM_NAME
+      - name: FROM_NAME
         description: "The token being swapped from"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_FROM_ID
+      - name: FROM_ID
         description: "The token id being swapped from"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_TO_AMOUNT
+      - name: TO_AMOUNT
         description: "The amount of tokens received from the swap"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_TO_NAME
+      - name: TO_NAME
         description: "The token being swapped to"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_TO_ID
+      - name: TO_ID
         description: "The token id being swapped to"
         tests:
           - dbt_expectations.expect_column_to_exist
@@ -80,7 +80,7 @@ models:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: SWAP_PROTOCOL
+      - name: PLATFORM
         description: "The name of the protocol where the swap occurred"
         tests:
           - dbt_expectations.expect_column_to_exist

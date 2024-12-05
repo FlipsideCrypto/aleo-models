@@ -1,9 +1,8 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = ['dim_token_registrations_id'],
+    unique_key = ['token_id'],
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
-    cluster_by = ['token_name'],
     tags = ['core','full_test']
 ) }}
 
