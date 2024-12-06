@@ -50,8 +50,8 @@ reports AS (
         succeeded,
         REPLACE(inputs[0]:value, 'field', '') AS address_from,
         REPLACE(inputs[1]:value, 'field', '') AS address_to,
-        inputs[2]:value AS swap_from,
-        inputs[3]:value AS swap_to,
+        inputs[2]:value :: STRING AS swap_from,
+        inputs[3]:value :: STRING AS swap_to,
         REPLACE(inputs[4]:value, 'u128', '') AS amount_from,
         REPLACE(inputs[5]:value, 'u128', '') AS amount_to
     FROM
