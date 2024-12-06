@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: test_defi__swaps_recent
+    description: Records of all swap transactions on Aleo, including both public and private swaps.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - TX_ID
+            - SWAPPER
+            - BLOCK_ID
+    columns:
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - not_null
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: hour
+              interval: 3
+
+      - name: BLOCK_ID
+        tests:
+          - not_null
+
+      - name: TX_ID
+        tests:
+          - not_null
+
+      - name: SWAPPER
+        tests:
+          - not_null
+
+      - name: SWAP_FROM_AMOUNT
+        tests:
+          - not_null
+
+      - name: SWAP_FROM_ID
+        tests:
+          - not_null
+
+      - name: SWAP_TO_AMOUNT
+        tests:
+          - not_null
+
+      - name: SWAP_TO_ID
+        tests:
+          - not_null
+
+      - name: ROOT_ACTION
+        tests:
+          - not_null
+
+      - name: SWAP_PROTOCOL
+        tests:
+          - not_null

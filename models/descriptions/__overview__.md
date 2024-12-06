@@ -21,6 +21,7 @@ There is more information on how to use dbt docs in the last section of this doc
 **Dimension Tables:**
 - [core.dim_labels](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__dim_labels)
 - [core.dim_programs](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__dim_programs)
+- [core.dim_token_registrations](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__dim_token_registrations)
 
 **Fact Tables:**
 - [core.fact_block_round_batches](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_block_round_batches)
@@ -29,6 +30,12 @@ There is more information on how to use dbt docs in the last section of this doc
 - [core.fact_transactions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transactions)
 - [core.fact_transitions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transitions)
 - [core.fact_transfers](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.core__fact_transfers)
+
+### DeFi Tables (`aleo`.`DEFI`.`<table_name>`)
+
+**Fact Tables:**
+- [defi.fact_swaps](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.defi__fact_swaps)
+- [defi.fact_liquidity_actions](https://flipsidecrypto.github.io/aleo-models/#!/model/model.aleo_models.defi__fact_liquidity_actions)
 
 ### Price Tables (`aleo`.`PRICE`.`<table_name>`)
 

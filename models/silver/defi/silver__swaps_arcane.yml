@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: silver__swaps_arcane    
+    columns:
+      - name: swaps_arcane_id
+        tests:
+          - unique
+          - not_null
+
+      - name: block_timestamp
+        tests:
+          - not_null
+
+      - name: block_id
+        tests:
+          - not_null
+
+      - name: tx_id
+        tests:
+          - not_null
+
+      - name: succeeded
+        tests:
+          - not_null
+
+      - name: swapper
+        tests:
+          - not_null
+
+      - name: from_amount_unadj
+        tests:
+          - not_null
+
+      - name: from_amount
+        tests:
+          - not_null
+
+      - name: from_symbol
+        tests:
+          - not_null
+
+      - name: from_id
+        tests:
+          - not_null
+
+      - name: to_amount_unadj
+        tests:
+          - not_null
+
+      - name: to_amount
+        tests:
+          - not_null
+
+      - name: to_symbol
+        tests:
+          - not_null
+
+      - name: to_id
+        tests:
+          - not_null
+
+      - name: root_action
+        tests:
+          - not_null

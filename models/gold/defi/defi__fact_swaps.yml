@@ -1,0 +1,115 @@
+version: 2
+models:
+  - name: defi__fact_swaps
+    description: Records of all swap transactions on Aleo, including both public and private swaps.
+    columns:
+      - name: BLOCK_TIMESTAMP
+        description: "{{ doc('block_timestamp') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+          - not_null
+
+      - name: BLOCK_ID
+        description: "{{ doc('block_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TX_ID
+        description: "{{ doc('tx_id') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: SUCCEEDED
+        description: "{{ doc('succeeded') }}"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - accepted_values:
+              values: [true, false]
+          - not_null
+
+      - name: SWAPPER
+        description: "The address that initiated the swap"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FROM_AMOUNT_UNADJ
+        description: "The amount of tokens input into the swap, unadjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FROM_AMOUNT
+        description: "The amount of tokens input into the swap, adjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FROM_SYMBOL
+        description: "The token being swapped from"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FROM_ID
+        description: "The token id being swapped from"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TO_AMOUNT_UNADJ
+        description: "The amount of tokens received from the swap, unadjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TO_AMOUNT
+        description: "The amount of tokens received from the swap, adjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TO_SYMBOL
+        description: "The token being swapped to"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TO_ID
+        description: "The token id being swapped to"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: ROOT_ACTION
+        description: "The program and function that initiated the swap"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: PLATFORM
+        description: "The name of the protocol where the swap occurred"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: FACT_SWAPS_ID
+        description: '{{ doc("pk") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'
+        tests:
+          - not_null
+
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}'
+        tests:
+          - not_null
