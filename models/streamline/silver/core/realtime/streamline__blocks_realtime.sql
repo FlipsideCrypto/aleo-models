@@ -31,7 +31,7 @@ SELECT
     ) :: INT AS partition_key,
     {{ target.database }}.live.udf_api(
         'GET',
-        '{Service}/block/height/latest' || block_number,
+        '{Service}/block/' || block_number,
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
