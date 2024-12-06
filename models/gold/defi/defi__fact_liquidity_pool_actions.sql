@@ -5,7 +5,7 @@
     incremental_strategy = 'merge',
     merge_exclude_columns = ['inserted_timestamp'],
     cluster_by = ['block_timestamp::DATE'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(liquidity_provider,token1_name,token2_name);",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(liquidity_provider,token1_symbol,token2_symbol);",
     tags = ['noncore', 'full_test']
 ) }}
 
@@ -20,8 +20,10 @@ WITH arcane AS (
         liquidity_provider,
         token1_id,
         token2_id,
-        token1_name,
-        token2_name,
+        token1_symbol,
+        token2_symbol,
+        token1_amount_unadj,
+        token2_amount_unadj,
         token1_amount,
         token2_amount,
         'Arcane Finance' AS liquidity_pool_protocol
@@ -52,10 +54,12 @@ SELECT
     liquidity_action,
     liquidity_provider,
     token1_id,
-    token2_id,
-    token1_name,
-    token2_name,
+    token1_symbol,
+    token1_amount_unadj,
     token1_amount,
+    token2_id,
+    token2_symbol,
+    token2_amount_unadj,
     token2_amount,
     liquidity_pool_protocol,
     {{ dbt_utils.generate_surrogate_key(['tx_id', 'liquidity_pool_protocol', 'token1_id','token2_id']) }} AS fact_liquidity_pool_actions_id,

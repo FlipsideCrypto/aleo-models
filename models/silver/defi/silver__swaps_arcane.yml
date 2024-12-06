@@ -28,7 +28,7 @@ models:
         tests:
           - not_null
 
-      - name: from_amount_raw
+      - name: from_amount_unadj
         tests:
           - not_null
 
@@ -36,7 +36,7 @@ models:
         tests:
           - not_null
 
-      - name: from_name
+      - name: from_symbol
         tests:
           - not_null
 
@@ -44,7 +44,7 @@ models:
         tests:
           - not_null
 
-      - name: to_amount_raw
+      - name: to_amount_unadj
         tests:
           - not_null
 
@@ -52,7 +52,7 @@ models:
         tests:
           - not_null
 
-      - name: to_name
+      - name: to_symbol
         tests:
           - not_null
 

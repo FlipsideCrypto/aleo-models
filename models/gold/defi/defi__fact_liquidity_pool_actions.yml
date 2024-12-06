@@ -56,38 +56,50 @@ models:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
+      - name: TOKEN1_SYMBOL
+        description: "The symbol of the first token in the liquidity pair"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN1_AMOUNT_UNADJ
+        description: "The amount of the first token added or removed from the pool, unadjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
+      - name: TOKEN1_AMOUNT
+        description: "The amount of the first token added or removed from the pool, adjusted for decimals"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - not_null
+
       - name: TOKEN2_ID
         description: "The token id of the second token in the liquidity pair"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: TOKEN1_NAME
-        description: "The name of the first token in the liquidity pair"
+      - name: TOKEN2_SYMBOL
+        description: "The symbol of the second token in the liquidity pair"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
-      - name: TOKEN2_NAME
-        description: "The name of the second token in the liquidity pair"
-        tests:
-          - dbt_expectations.expect_column_to_exist
-          - not_null
-
-      - name: TOKEN1_AMOUNT
-        description: "The amount of the first token added or removed from the pool"
+      - name: TOKEN2_AMOUNT_UNADJ
+        description: "The amount of the second token added or removed from the pool, unadjusted for decimals"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
       - name: TOKEN2_AMOUNT
-        description: "The amount of the second token added or removed from the pool"
+        description: "The amount of the second token added or removed from the pool, adjusted for decimals"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null
 
       - name: LIQUIDITY_POOL_PROTOCOL
-        description: "The name of the protocol where the liquidity pool action occurred"
+        description: "The liquidity pool protocol related to the action"
         tests:
           - dbt_expectations.expect_column_to_exist
           - not_null

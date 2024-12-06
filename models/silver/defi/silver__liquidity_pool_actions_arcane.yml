@@ -36,11 +36,15 @@ models:
         tests:
           - not_null
 
+      - name: token1_amount_unadj
+        tests:
+          - not_null
+
       - name: token1_amount
         tests:
           - not_null
 
-      - name: token1_name
+      - name: token1_symbol
         tests:
           - not_null
 
@@ -48,11 +52,15 @@ models:
         tests:
           - not_null
 
+      - name: token2_amount_unadj
+        tests:
+          - not_null
+
       - name: token2_amount
         tests:
           - not_null
 
-      - name: token2_name
+      - name: token2_symbol
         tests:
           - not_null
 
