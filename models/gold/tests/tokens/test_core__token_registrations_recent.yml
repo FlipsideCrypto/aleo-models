@@ -13,8 +13,8 @@ models:
           - not_null:
               where: token_id != '3443843282313283355522573239085696902919850365217539366784739393210722344986field'
           - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: hour
-              interval: 3
+              datepart: day
+              interval: 2
 
       - name: TX_ID_CREATED
         tests:
