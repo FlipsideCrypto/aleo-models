@@ -22,7 +22,7 @@ WITH base AS (
     FROM
         {{ ref('silver__transitions') }}
     WHERE
-        program_id = 'credits.aleo'
+        program_id = 'token_registry.aleo'
         AND function IN (
             'transfer_public',
             'transfer_private',
@@ -97,23 +97,27 @@ mapped_transfers AS (
         succeeded,
         function,
         CASE
-            WHEN function IN ('transfer_public', 'transfer_public_as_signer') THEN args_array[0]
+            WHEN function IN ('transfer_public', 'transfer_public_as_signer') THEN args_array[1]
             WHEN function = 'transfer_private_to_public' THEN null
-            WHEN function = 'transfer_public_to_private' THEN args_array[0]
+            WHEN function = 'transfer_public_to_private' THEN args_array[2]
             WHEN function = 'transfer_private' THEN null
         END :: STRING as transfer_from,
         CASE
-            WHEN function IN ('transfer_public', 'transfer_public_as_signer') THEN args_array[1]
-            WHEN function = 'transfer_private_to_public' THEN args_array[0]
+            WHEN function IN ('transfer_public', 'transfer_public_as_signer') THEN args_array[3]
+            WHEN function = 'transfer_private_to_public' THEN args_array[1]
             WHEN function = 'transfer_public_to_private' THEN null
             WHEN function = 'transfer_private' THEN null
         END :: STRING as transfer_to,
         CASE
             WHEN function IN ('transfer_public', 'transfer_public_as_signer') THEN args_array[2]
-            WHEN function = 'transfer_private_to_public' THEN args_array[1]
+            WHEN function = 'transfer_private_to_public' THEN args_array[2]
             WHEN function = 'transfer_public_to_private' THEN args_array[1]
             WHEN function = 'transfer_private' THEN null
-        END :: STRING as amount
+        END :: STRING as amount,
+        CASE 
+            WHEN function = 'transfer_private' THEN null
+            ELSE args_array[0] 
+        END :: STRING as token_id
     FROM output_args_cleaned
 )
 select
@@ -126,12 +130,12 @@ select
     function as transfer_type,
     transfer_from as sender,
     transfer_to as receiver,
-    REPLACE(amount, 'u64', '') :: BIGINT / pow(
+    REPLACE(amount, 'u128', '') :: BIGINT / pow(
             10,
             6
         ) AS amount,
-    TRUE AS is_native,
-    '3443843282313283355522573239085696902919850365217539366784739393210722344986field' AS token_id,
+    FALSE AS is_native,
+    token_id,
     SYSDATE() as inserted_timestamp,
     SYSDATE() as modified_timestamp,
     '{{ invocation_id }}' as _invocation_id
