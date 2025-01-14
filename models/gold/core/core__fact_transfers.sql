@@ -54,7 +54,7 @@ nonnative_transfers AS (
         receiver,
         amount,
         is_native,
-        token_id
+        token_id as token_address
     FROM
         {{ ref('silver__nonnative_transfers') }}
 
@@ -90,7 +90,7 @@ SELECT
     receiver,
     amount,
     is_native,
-    token_id,
+    token_id as token_address,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id','transfer_type']
     ) }} AS fact_transfers_id,

@@ -42,7 +42,7 @@ models:
         description: "Whether the transfer is a native transfer (credits.aleo) or a non-native transfer (token_registry.aleo)."
         tests: 
           - dbt_expectations.expect_column_to_exist
-      - name: TOKEN_ID 
+      - name: TOKEN_ADDRESS 
         description: "Token address of the transfer."
         tests: 
           - dbt_expectations.expect_column_to_exist
