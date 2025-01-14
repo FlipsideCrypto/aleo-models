@@ -54,7 +54,7 @@ nonnative_transfers AS (
         receiver,
         amount,
         is_native,
-        token_id as token_address
+        token_id
     FROM
         {{ ref('silver__nonnative_transfers') }}
 
