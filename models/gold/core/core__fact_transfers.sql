@@ -21,7 +21,7 @@ SELECT
     receiver,
     amount,
     is_native,
-    token_address,
+    token_id,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_id','transition_id','transfer_type']
     ) }} AS fact_transfers_id,
@@ -30,6 +30,45 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     {{ ref('silver__native_transfers') }}
+
+{% if is_incremental() %}
+WHERE
+    modified_timestamp >= DATEADD(
+        'minute',
+        -5,(
+            SELECT
+                MAX(
+                    modified_timestamp
+                )
+            FROM
+                {{ this }}
+        )
+    )
+{% endif %}
+
+UNION ALL
+
+SELECT
+    block_id,
+    block_timestamp,
+    tx_id,
+    tx_succeeded,
+    transition_id,
+    index,
+    transfer_type,
+    sender,
+    receiver,
+    amount,
+    is_native,
+    token_id,
+    {{ dbt_utils.generate_surrogate_key(
+        ['tx_id','transition_id','transfer_type']
+    ) }} AS fact_transfers_id,
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    '{{ invocation_id }}' AS _invocation_id
+FROM
+    {{ ref('silver__nonnative_transfers') }}
 
 {% if is_incremental() %}
 WHERE
