@@ -36,7 +36,7 @@ SELECT
             'Content-Type',
             'application/json'
         ),{},
-        'Vault/dev/aleo/mainnet'
+        'Vault/prod/aleo/mainnet'
     ) AS request,
     block_number
 FROM
