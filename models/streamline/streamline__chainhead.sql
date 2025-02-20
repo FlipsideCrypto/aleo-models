@@ -11,5 +11,5 @@ SELECT
             'Content-Type',
             'application/json'
         ),{},
-        'Vault/dev/aleo/mainnet'
+        'Vault/prod/aleo/mainnet'
     ) :data :: INT AS block_number
