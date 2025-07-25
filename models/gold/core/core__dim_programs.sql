@@ -15,7 +15,7 @@ WITH base AS (
         program,
         verifying_keys,
         {{ dbt_utils.generate_surrogate_key(
-            ['program_id']
+            ['program_id', 'edition']
         ) }} AS dim_program_id,
         SYSDATE() AS insert_timestamp,
         SYSDATE() AS modified_timestamp,
