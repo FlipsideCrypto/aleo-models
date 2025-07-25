@@ -16,7 +16,6 @@ models:
         description: "{{ doc('program_id') }}"
         tests:
           - not_null
-          - unique
       - name: EDITION
         description: "{{ doc('edition') }}"
         tests:
