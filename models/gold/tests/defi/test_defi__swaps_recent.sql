@@ -3,7 +3,7 @@
     tags = ['recent_test']
 ) }}
 
-WITH last_3_days AS (
+WITH last_7_days AS (
 
     SELECT
         block_date
@@ -12,7 +12,7 @@ WITH last_3_days AS (
         qualify ROW_NUMBER() over (
             ORDER BY
                 block_date DESC
-        ) = 3
+        ) = 7
 )
 SELECT
     *
@@ -23,5 +23,5 @@ WHERE
         SELECT
             block_date
         FROM
-            last_3_days
+            last_7_days
     )
