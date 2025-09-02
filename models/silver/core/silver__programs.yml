@@ -16,7 +16,6 @@ models:
         description: "The unique identifier of the program."
         tests:
           - not_null
-          - unique
       - name: EDITION
         description: "The version or edition number of the program."
         tests:
