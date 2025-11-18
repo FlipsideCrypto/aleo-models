@@ -1,6 +1,6 @@
 workflow_name,workflow_schedule
 dbt_run_streamline_blocks_realtime,"5,35 * * * *"
-dbt_run_core,"20,50 * * * *"
-dbt_test_tasks,"0,30 * * * *"
-dbt_run_non_core,"25 */3 * * *"
-dbt_test_recent,"20 */4 * * *"
+dbt_run_core,"50 */3 * * *"
+dbt_test_tasks,"0 * * * *"
+dbt_run_non_core,"25 */6 * * *"
+dbt_test_recent,"20 */12 * * *"
