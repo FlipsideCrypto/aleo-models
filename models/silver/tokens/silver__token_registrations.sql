@@ -64,6 +64,7 @@ cleaned_strings as (
         external_auth_party
     from
         parsed_inputs
+        where len(symbol_encoded) <30
 ),
 fin as (
     select 
